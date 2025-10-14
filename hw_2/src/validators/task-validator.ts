@@ -24,4 +24,4 @@ export function validateTasks(tasks: unknown): ValidatedTask[] {
     return tasksSchema.parse(tasks)
 }
 
-export const parsedTasks: ValidatedTask[] = validateTasks(tasks) as ValidatedTask[]
+export const parsedTasks = validateTasks(tasks)
