@@ -1,17 +1,14 @@
-export enum StatusEnum {
+export enum Status {
   Todo = 'todo',
   InProgress = 'in_progress',
   Done = 'done'
 }
-export enum PriorityEnum {
+export enum Priority {
   Low = 'low',
   Medium = 'medium',
   High = 'high',
   Urgent = 'urgent'
 }
-
-export type Status = StatusEnum.Todo | StatusEnum.InProgress | StatusEnum.Done
-export type Priority = PriorityEnum.Low | PriorityEnum.Medium | PriorityEnum.High | PriorityEnum.Urgent
 
 export type TaskCreateInput = {
   title: string

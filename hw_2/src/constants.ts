@@ -1,7 +1,7 @@
-import { Priority, Status, StatusEnum, PriorityEnum } from "./types/ITask"
+import { Priority, Status } from "./types/ITask"
 
-export const defaultStatus: Status = StatusEnum.Todo
-export const statuses: Status[] = Object.values(StatusEnum)
+export const defaultStatus: Status = Status.Todo
+export const statuses: Status[] = Object.values(Status)
 
-export const defaultPriority: Priority = PriorityEnum.Medium
-export const priorities: Priority[] = Object.values(PriorityEnum)
+export const defaultPriority: Priority = Priority.Medium
+export const priorities: Priority[] = Object.values(Priority)
