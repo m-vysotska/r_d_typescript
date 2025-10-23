@@ -1,11 +1,17 @@
+<<<<<<< HEAD
 import { z } from 'zod';
 
+=======
+>>>>>>> 5cb277113906564c3b7f995c7270ee5c2273d2b6
 export enum Status {
   Todo = 'todo',
   InProgress = 'in_progress',
   Done = 'done'
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 5cb277113906564c3b7f995c7270ee5c2273d2b6
 export enum Priority {
   Low = 'low',
   Medium = 'medium',
@@ -13,6 +19,7 @@ export enum Priority {
   Urgent = 'urgent'
 }
 
+<<<<<<< HEAD
 // Base task type
 export type TaskBase = {
   id: string;
@@ -45,6 +52,33 @@ export type TaskFilterOptions = {
 }
 
 // Task type specific data interfaces
+=======
+export type TaskCreateInput = {
+  title: string
+  description: string
+  status?: Status
+  priority?: Priority
+  deadline: string | Date 
+}
+
+export type TaskUpdateInput = Partial<Omit<Task, 'createdAt' | 'id'>> 
+
+export type Task = TaskCreateInput & {
+  id: string
+  createdAt: string | Date 
+  updatedAt?: string | Date
+}
+
+export type ValidatedTask = Required<Omit<Task, 'updatedAt'>> & { updatedAt?: string | Date}
+
+export type TaskFilterOptions = {
+  status?: Status
+  priority?: Priority
+  createdAfter?: string | Date 
+  createdBefore?: string | Date
+}
+
+>>>>>>> 5cb277113906564c3b7f995c7270ee5c2273d2b6
 export interface SubtaskData {
   parentTaskId: string;
   estimatedHours?: number;
@@ -66,6 +100,7 @@ export interface EpicData {
   epicGoal: string;
   childStories: string[];
   estimatedDuration?: number; // in days
+<<<<<<< HEAD
 }
 
 // Validation schemas
@@ -104,3 +139,6 @@ export const EpicDataSchema = z.object({
 });
 
 export { TaskBaseSchema };
+=======
+}
+>>>>>>> 5cb277113906564c3b7f995c7270ee5c2273d2b6
