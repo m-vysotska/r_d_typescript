@@ -1,0 +1,23 @@
+{
+  "name": "hw_1",
+  "version": "1.0.0",
+  "description": "r_d typescript course hw 2",
+  "main": "index.js",
+  "type": "commonjs",
+  "scripts": {
+    "dev": "ts-node-dev --respawn src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "author": "Mariia Vysotska",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^24.6.0",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.9.2"
+  },
+  "dependencies": {
+    "uuid": "^13.0.0",
+    "zod": "^4.1.12"
+  }
+}
