@@ -1,10 +1,6 @@
 import { z } from 'zod';
 import { 
-<<<<<<< HEAD
   TaskBase,
-=======
-  TaskBase, 
->>>>>>> 5cb277113906564c3b7f995c7270ee5c2273d2b6
   SubtaskData, 
   BugData, 
   StoryData, 
@@ -23,28 +19,15 @@ export class Task {
   }
 
   getTaskInfo(): string {
-<<<<<<< HEAD
     return `Task Information:
-=======
-    return `
-Task Information:
->>>>>>> 5cb277113906564c3b7f995c7270ee5c2273d2b6
 - ID: ${this.taskData.id}
 - Title: ${this.taskData.title}
 - Description: ${this.taskData.description}
 - Status: ${this.taskData.status}
 - Priority: ${this.taskData.priority}
-<<<<<<< HEAD
 - Created: ${new Date(this.taskData.createdAt).toISOString()}
 - Updated: ${this.taskData.updatedAt ? new Date(this.taskData.updatedAt).toISOString() : 'Never'}
 - Deadline: ${new Date(this.taskData.deadline).toISOString()}`.trim();
-=======
-- Created: ${this.taskData.createdAt.toISOString()}
-- Updated: ${this.taskData.updatedAt?.toISOString() || 'Never'}
-- Deadline: ${this.taskData.deadline?.toISOString() || 'No deadline'}
-- Assignee: ${this.taskData.assignee || 'Unassigned'}
-    `.trim();
->>>>>>> 5cb277113906564c3b7f995c7270ee5c2273d2b6
   }
 
   getId(): string {
@@ -79,12 +62,7 @@ export class Subtask extends Task {
   }
 
   getTaskInfo(): string {
-<<<<<<< HEAD
     return `Subtask Information:
-=======
-    return `
-Subtask Information:
->>>>>>> 5cb277113906564c3b7f995c7270ee5c2273d2b6
 - ID: ${this.taskData.id}
 - Title: ${this.taskData.title}
 - Description: ${this.taskData.description}
@@ -92,17 +70,9 @@ Subtask Information:
 - Priority: ${this.taskData.priority}
 - Parent Task ID: ${this.subtaskData.parentTaskId}
 - Estimated Hours: ${this.subtaskData.estimatedHours || 'Not estimated'}
-<<<<<<< HEAD
 - Created: ${new Date(this.taskData.createdAt).toISOString()}
 - Updated: ${this.taskData.updatedAt ? new Date(this.taskData.updatedAt).toISOString() : 'Never'}
 - Deadline: ${new Date(this.taskData.deadline).toISOString()}`;
-=======
-- Created: ${this.taskData.createdAt.toISOString()}
-- Updated: ${this.taskData.updatedAt?.toISOString() || 'Never'}
-- Deadline: ${this.taskData.deadline?.toISOString() || 'No deadline'}
-- Assignee: ${this.taskData.assignee || 'Unassigned'}
-    `.trim();
->>>>>>> 5cb277113906564c3b7f995c7270ee5c2273d2b6
   }
 
   getParentTaskId(): string {
@@ -133,12 +103,7 @@ export class Bug extends Task {
   }
 
   getTaskInfo(): string {
-<<<<<<< HEAD
     return `Bug Information:
-=======
-    return `
-Bug Information:
->>>>>>> 5cb277113906564c3b7f995c7270ee5c2273d2b6
 - ID: ${this.taskData.id}
 - Title: ${this.taskData.title}
 - Description: ${this.taskData.description}
@@ -147,17 +112,9 @@ Bug Information:
 - Severity: ${this.bugData.severity}
 - Environment: ${this.bugData.environment || 'Not specified'}
 - Reproduction Steps: ${this.bugData.reproductionSteps.join('\n  - ')}
-<<<<<<< HEAD
 - Created: ${new Date(this.taskData.createdAt).toISOString()}
 - Updated: ${this.taskData.updatedAt ? new Date(this.taskData.updatedAt).toISOString() : 'Never'}
 - Deadline: ${new Date(this.taskData.deadline).toISOString()}`;
-=======
-- Created: ${this.taskData.createdAt.toISOString()}
-- Updated: ${this.taskData.updatedAt?.toISOString() || 'Never'}
-- Deadline: ${this.taskData.deadline?.toISOString() || 'No deadline'}
-- Assignee: ${this.taskData.assignee || 'Unassigned'}
-    `.trim();
->>>>>>> 5cb277113906564c3b7f995c7270ee5c2273d2b6
   }
 
   getSeverity(): string {
@@ -192,12 +149,7 @@ export class Story extends Task {
   }
 
   getTaskInfo(): string {
-<<<<<<< HEAD
     return `Story Information:
-=======
-    return `
-Story Information:
->>>>>>> 5cb277113906564c3b7f995c7270ee5c2273d2b6
 - ID: ${this.taskData.id}
 - Title: ${this.taskData.title}
 - Description: ${this.taskData.description}
@@ -206,17 +158,9 @@ Story Information:
 - Story Points: ${this.storyData.storyPoints}
 - Epic ID: ${this.storyData.epicId || 'Not assigned to epic'}
 - Acceptance Criteria: ${this.storyData.acceptanceCriteria.join('\n  - ')}
-<<<<<<< HEAD
 - Created: ${new Date(this.taskData.createdAt).toISOString()}
 - Updated: ${this.taskData.updatedAt ? new Date(this.taskData.updatedAt).toISOString() : 'Never'}
 - Deadline: ${new Date(this.taskData.deadline).toISOString()}`;
-=======
-- Created: ${this.taskData.createdAt.toISOString()}
-- Updated: ${this.taskData.updatedAt?.toISOString() || 'Never'}
-- Deadline: ${this.taskData.deadline?.toISOString() || 'No deadline'}
-- Assignee: ${this.taskData.assignee || 'Unassigned'}
-    `.trim();
->>>>>>> 5cb277113906564c3b7f995c7270ee5c2273d2b6
   }
 
   getStoryPoints(): number {
@@ -238,10 +182,6 @@ export class Epic extends Task {
   constructor(taskData: TaskBase, epicData: EpicData) {
     super(taskData);
     
-<<<<<<< HEAD
-=======
-    // Validate epic data using Zod
->>>>>>> 5cb277113906564c3b7f995c7270ee5c2273d2b6
     try {
       this.epicData = EpicDataSchema.parse(epicData);
     } catch (error) {
@@ -254,12 +194,7 @@ export class Epic extends Task {
   }
 
   getTaskInfo(): string {
-<<<<<<< HEAD
     return `Epic Information:
-=======
-    return `
-Epic Information:
->>>>>>> 5cb277113906564c3b7f995c7270ee5c2273d2b6
 - ID: ${this.taskData.id}
 - Title: ${this.taskData.title}
 - Description: ${this.taskData.description}
@@ -269,17 +204,9 @@ Epic Information:
 - Estimated Duration: ${this.epicData.estimatedDuration ? `${this.epicData.estimatedDuration} days` : 'Not estimated'}
 - Child Stories: ${this.epicData.childStories.length} stories
   ${this.epicData.childStories.map(id => `- ${id}`).join('\n  ')}
-<<<<<<< HEAD
 - Created: ${new Date(this.taskData.createdAt).toISOString()}
 - Updated: ${this.taskData.updatedAt ? new Date(this.taskData.updatedAt).toISOString() : 'Never'}
 - Deadline: ${new Date(this.taskData.deadline).toISOString()}`;
-=======
-- Created: ${this.taskData.createdAt.toISOString()}
-- Updated: ${this.taskData.updatedAt?.toISOString() || 'Never'}
-- Deadline: ${this.taskData.deadline?.toISOString() || 'No deadline'}
-- Assignee: ${this.taskData.assignee || 'Unassigned'}
-    `.trim();
->>>>>>> 5cb277113906564c3b7f995c7270ee5c2273d2b6
   }
 
   getEpicGoal(): string {

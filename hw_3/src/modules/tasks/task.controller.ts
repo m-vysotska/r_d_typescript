@@ -70,35 +70,20 @@ export class TaskController {
       throw error;
     }
   }
-<<<<<<< HEAD
 
-=======
->>>>>>> 5cb277113906564c3b7f995c7270ee5c2273d2b6
   // Convenience methods
   getTasksByStatus(status: Status): ValidatedTask[] {
     return this.filterTasks({ status });
   }
-<<<<<<< HEAD
 
   getTasksByPriority(priority: Priority): ValidatedTask[] {
     return this.filterTasks({ priority });
   }
-=======
-  }
-  getTasksByPriority(priority: Priority): ValidatedTask[] {
-    return this.filterTasks({ priority });
-  }
-  }
->>>>>>> 5cb277113906564c3b7f995c7270ee5c2273d2b6
 
   getOverdueTasks(): ValidatedTask[] {
     const now = new Date();
     return this.getAllTasks().filter(task => 
-<<<<<<< HEAD
       task.deadline && new Date(task.deadline) < now && task.status !== Status.Done
-=======
-      task.deadline && new Date(task.deadline) < now && task.status !== 'done'
->>>>>>> 5cb277113906564c3b7f995c7270ee5c2273d2b6
     );
   }
 }

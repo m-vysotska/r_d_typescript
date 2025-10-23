@@ -4,28 +4,20 @@ import {
   TaskCreateInput, 
   TaskUpdateInput, 
   TaskFilterOptions, 
-<<<<<<< HEAD
   ValidatedTask,
   Status,
   Priority,
   TaskBaseSchema
-=======
-  ValidatedTask 
->>>>>>> 5cb277113906564c3b7f995c7270ee5c2273d2b6
 } from './task.types';
 
 export class TaskService {
   private tasks: ValidatedTask[] = [];
 
   private validateTask(task: TaskBase): ValidatedTask {
-<<<<<<< HEAD
     // Validate using Zod schema
     const validatedTask = TaskBaseSchema.parse(task);
 
     // Additional business logic validations
-=======
-
->>>>>>> 5cb277113906564c3b7f995c7270ee5c2273d2b6
     if (!task.title || task.title.trim() === '') {
       throw new Error('Task title cannot be empty');
     }
@@ -34,28 +26,12 @@ export class TaskService {
       throw new Error('Task description cannot be empty');
     }
     
-<<<<<<< HEAD
     const deadlineDate = new Date(task.deadline);
     if (deadlineDate < new Date()) {
       throw new Error('Deadline cannot be in the past');
     }
 
     return validatedTask;
-=======
-    if (task.deadline && task.deadline < new Date()) {
-      throw new Error('Deadline cannot be in the past');
-    }
-    
-    if (task.priority && !['low', 'medium', 'high'].includes(task.priority)) {
-      throw new Error('Priority must be low, medium, or high');
-    }
-    
-    if (task.status && !['todo', 'in-progress', 'done'].includes(task.status)) {
-      throw new Error('Status must be todo, in-progress, or done');
-    }
-
-    return { ...task, isValid: true };
->>>>>>> 5cb277113906564c3b7f995c7270ee5c2273d2b6
   }
 
   getTaskById(id: string): ValidatedTask | undefined {
@@ -66,12 +42,8 @@ export class TaskService {
     const task: TaskBase = {
       id: uuid4(),
       createdAt: new Date(),
-<<<<<<< HEAD
       status: Status.Todo,
       priority: Priority.Medium,
-=======
-      status: 'todo',
->>>>>>> 5cb277113906564c3b7f995c7270ee5c2273d2b6
       ...newTask
     };
 
@@ -135,13 +107,7 @@ export class TaskService {
     const task = this.getTaskById(taskId);
     if (!task) throw new Error("Task doesn't exist");
 
-<<<<<<< HEAD
     if (task.status !== Status.Done) return false;
-=======
-    if (task.status !== "done") return false;
-
-    if (!task.deadline) return true;
->>>>>>> 5cb277113906564c3b7f995c7270ee5c2273d2b6
 
     const deadline = new Date(task.deadline).getTime();
     const completedAt = task.updatedAt ? new Date(task.updatedAt).getTime() : new Date().getTime();
