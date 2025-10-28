@@ -1,0 +1,60 @@
+{
+  "tasks": [
+    {
+      "id": "1",
+      "title": "Complete homework assignment",
+      "description": "Finish the TypeScript homework with all required features",
+      "status": "in_progress",
+      "priority": "high",
+      "deadline": "2024-12-31",
+      "createdAt": "2024-12-01T10:00:00Z",
+      "updatedAt": "2024-12-05T10:00:00Z"
+    },
+    {
+      "id": "2",
+      "title": "Review code quality",
+      "description": "Check the code for any potential improvements",
+      "status": "todo",
+      "priority": "medium",
+      "deadline": "2024-12-15",
+      "createdAt": "2024-12-05T14:30:00Z"
+    },
+    {
+      "id": "3",
+      "title": "Setup development environment",
+      "description": "Install all necessary tools and dependencies",
+      "status": "done",
+      "priority": "urgent",
+      "deadline": "2024-12-10",
+      "createdAt": "2024-11-25T09:00:00Z",
+      "updatedAt": "2024-12-08T15:00:00Z"
+    },
+    {
+      "id": "c4d5",
+      "title": "Test title",
+      "description": "test description",
+      "status": "in_progress",
+      "priority": "low",
+      "deadline": "2025-10-16",
+      "createdAt": "2025-10-28T20:48:51.399Z"
+    },
+    {
+      "id": "9d31",
+      "title": "title",
+      "description": "description",
+      "status": "todo",
+      "priority": "low",
+      "deadline": "2025-10-31",
+      "createdAt": "2025-10-28T20:49:13.371Z"
+    },
+    {
+      "id": "808d",
+      "title": "kkj",
+      "description": "jjjj",
+      "status": "todo",
+      "priority": "low",
+      "deadline": "2025-10-31",
+      "createdAt": "2025-10-28T21:04:11.877Z"
+    }
+  ]
+}
