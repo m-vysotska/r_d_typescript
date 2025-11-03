@@ -11,13 +11,13 @@ import {
 export class TaskController {
   private taskService: TaskService;
 
-  constructor() {
-    this.taskService = new TaskService();
+  constructor(taskService: TaskService) {
+    this.taskService = taskService;
   }
 
   // Task CRUD operations
   getTaskById(id: string): ValidatedTask | undefined {
-    return this.taskService.getTaskById(id);
+    return this.taskService.getTaskByIdAsValidated(id);
   }
 
   createTask(taskData: TaskCreateInput): ValidatedTask {
@@ -50,7 +50,8 @@ export class TaskController {
   // Task filtering and querying
   filterTasks(options: TaskFilterOptions): ValidatedTask[] {
     try {
-      return this.taskService.filterTasks(options);
+      const tasks = this.taskService.filterTasks(options);
+      return tasks.map(task => task.taskBase as ValidatedTask);
     } catch (error) {
       console.error('Error filtering tasks:', error);
       throw error;
@@ -58,7 +59,7 @@ export class TaskController {
   }
 
   getAllTasks(): ValidatedTask[] {
-    return this.taskService.getAllTasks();
+    return this.taskService.getAllTasksAsValidated();
   }
 
   // Task analysis

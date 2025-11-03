@@ -7,15 +7,21 @@ import {
   ValidatedTask,
   Status,
   Priority,
-  TaskBaseSchema
+  TaskBaseSchema,
+  TaskType,
+  SubtaskData,
+  BugData,
+  StoryData,
+  EpicData
 } from './task.types';
+import { Task, Subtask, Bug, Story, Epic } from './models';
+import { validateData } from './validators/task-validator';
 
 export class TaskService {
-  private tasks: ValidatedTask[] = [];
+  private tasks: Task[] = [];
 
   private validateTask(task: TaskBase): ValidatedTask {
-    // Validate using Zod schema
-    const validatedTask = TaskBaseSchema.parse(task);
+    const validatedTask = validateData(task, TaskBaseSchema, 'Task');
 
     // Additional business logic validations
     if (!task.title || task.title.trim() === '') {
@@ -34,45 +40,106 @@ export class TaskService {
     return validatedTask;
   }
 
-  getTaskById(id: string): ValidatedTask | undefined {
+  /**
+   * Factory method to create task objects based on type
+   */
+  createTaskFromType(
+    type: TaskType,
+    taskData: TaskCreateInput,
+    specificData?: SubtaskData | BugData | StoryData | EpicData
+  ): Task {
+    const baseTask: TaskBase = {
+      id: uuid4(),
+      createdAt: new Date(),
+      status: taskData.status || Status.Todo,
+      priority: taskData.priority || Priority.Medium,
+      ...taskData
+    };
+
+    this.validateTask(baseTask);
+
+    switch (type) {
+      case 'task':
+        return new Task(baseTask);
+      case 'subtask':
+        if (!specificData || !('parentTaskId' in specificData)) {
+          throw new Error('Subtask requires SubtaskData with parentTaskId');
+        }
+        // Extract only subtask-specific fields (omit TaskBase fields)
+        const { parentTaskId, estimatedHours } = specificData as SubtaskData;
+        return new Subtask(baseTask, { parentTaskId, estimatedHours });
+      case 'bug':
+        if (!specificData || !('severity' in specificData)) {
+          throw new Error('Bug requires BugData with severity');
+        }
+        // Extract only bug-specific fields
+        const { severity, reproductionSteps, environment } = specificData as BugData;
+        return new Bug(baseTask, { severity, reproductionSteps, environment });
+      case 'story':
+        if (!specificData || !('storyPoints' in specificData)) {
+          throw new Error('Story requires StoryData with storyPoints');
+        }
+        // Extract only story-specific fields
+        const { storyPoints, acceptanceCriteria, epicId } = specificData as StoryData;
+        return new Story(baseTask, { storyPoints, acceptanceCriteria, epicId });
+      case 'epic':
+        if (!specificData || !('epicGoal' in specificData)) {
+          throw new Error('Epic requires EpicData with epicGoal');
+        }
+        // Extract only epic-specific fields
+        const { epicGoal, childStories, estimatedDuration } = specificData as EpicData;
+        return new Epic(baseTask, { epicGoal, childStories, estimatedDuration });
+      default:
+        throw new Error(`Unknown task type: ${type}`);
+    }
+  }
+
+  /**
+   * Add a Task object to the tasks array
+   */
+  addTask(task: Task): void {
+    this.tasks.push(task);
+    console.log("Task added:", task.getTaskInfo());
+  }
+
+  getTaskById(id: string): Task | undefined {
     return this.tasks.find(task => task.id === id);
   }
 
+  getTaskByIdAsValidated(id: string): ValidatedTask | undefined {
+    const task = this.getTaskById(id);
+    if (!task) return undefined;
+    return task.taskBase as ValidatedTask;
+  }
+
   createTask(newTask: TaskCreateInput): ValidatedTask {
-    const task: TaskBase = {
-      id: uuid4(),
-      createdAt: new Date(),
-      status: Status.Todo,
-      priority: Priority.Medium,
-      ...newTask
-    };
-
-    const validatedTask = this.validateTask(task);
-    this.tasks.push(validatedTask);
-
-    console.log("Task created:", validatedTask);
-    console.log("Tasks list:", this.tasks);
-
-    return validatedTask;
+    const taskObj = this.createTaskFromType('task', newTask);
+    this.addTask(taskObj);
+    return taskObj.taskBase as ValidatedTask;
   }
 
   updateTask(id: string, updateInput: TaskUpdateInput): ValidatedTask | undefined {
-    const taskIndex = this.tasks.findIndex(t => t.id === id);
-    if (taskIndex === -1) return undefined;
+    const task = this.getTaskById(id);
+    if (!task) return undefined;
     
-    let updatedTask = { 
-      ...this.tasks[taskIndex], 
+    const updatedBase: TaskBase = {
+      ...task.taskBase,
       ...updateInput,
       updatedAt: new Date()
     };
     
-    const validatedTask = this.validateTask(updatedTask);
-    this.tasks[taskIndex] = validatedTask;
+    this.validateTask(updatedBase);
+    
+    // Update the task's base data
+    task.taskData = updatedBase;
+    
+    const index = this.tasks.findIndex(t => t.id === id);
+    if (index > -1) {
+      this.tasks[index] = task;
+    }
 
-    console.log("Task updated:", validatedTask);
-    console.log("Tasks updated list:", this.tasks);
-
-    return validatedTask;
+    console.log("Task updated:", task.getTaskInfo());
+    return updatedBase as ValidatedTask;
   }
 
   deleteTask(id: string): boolean {
@@ -80,17 +147,18 @@ export class TaskService {
     if (taskIndex === -1) return false;
     
     this.tasks.splice(taskIndex, 1);
-    console.log("Task deleted, updated list:", this.tasks);
+    console.log("Task deleted, updated list:", this.tasks.length);
 
     return true;
   }
 
-  filterTasks(options: TaskFilterOptions): ValidatedTask[] {
+  filterTasks(options: TaskFilterOptions): Task[] {
     const filteredTasks = this.tasks.filter(task => {
-      if (options.status && task.status !== options.status) return false;
-      if (options.priority && task.priority !== options.priority) return false;
+      const taskBase = task.taskBase;
+      if (options.status && taskBase.status !== options.status) return false;
+      if (options.priority && taskBase.priority !== options.priority) return false;
 
-      const createdAt = new Date(task.createdAt).getTime();
+      const createdAt = new Date(taskBase.createdAt).getTime();
       const after = options.createdAfter ? new Date(options.createdAfter).getTime() : -Infinity;
       const before = options.createdBefore ? new Date(options.createdBefore).getTime() : Infinity;
 
@@ -99,7 +167,7 @@ export class TaskService {
       return true;
     });
     
-    console.log("Filtered tasks:", filteredTasks);
+    console.log("Filtered tasks:", filteredTasks.length);
     return filteredTasks;
   }
 
@@ -107,15 +175,20 @@ export class TaskService {
     const task = this.getTaskById(taskId);
     if (!task) throw new Error("Task doesn't exist");
 
-    if (task.status !== Status.Done) return false;
+    const taskBase = task.taskBase;
+    if (taskBase.status !== Status.Done) return false;
 
-    const deadline = new Date(task.deadline).getTime();
-    const completedAt = task.updatedAt ? new Date(task.updatedAt).getTime() : new Date().getTime();
+    const deadline = new Date(taskBase.deadline).getTime();
+    const completedAt = taskBase.updatedAt ? new Date(taskBase.updatedAt).getTime() : new Date().getTime();
 
     return deadline >= completedAt;
   }
 
-  getAllTasks(): ValidatedTask[] {
+  getAllTasks(): Task[] {
     return [...this.tasks];
+  }
+
+  getAllTasksAsValidated(): ValidatedTask[] {
+    return this.tasks.map(task => task.taskBase as ValidatedTask);
   }
 }

@@ -13,14 +13,8 @@ export enum Priority {
   Urgent = 'urgent'
 }
 
-// Base task type
-export type TaskBase = {
+export type TaskBase = Required<TaskCreateInput> & {
   id: string;
-  title: string;
-  description: string;
-  status: Status;
-  priority: Priority;
-  deadline: string | Date;
   createdAt: string | Date;
   updatedAt?: string | Date;
 }
@@ -44,29 +38,31 @@ export type TaskFilterOptions = {
   createdBefore?: string | Date;
 }
 
-// Task type specific data interfaces
-export interface SubtaskData {
+export interface SubtaskData extends TaskBase {
   parentTaskId: string;
   estimatedHours?: number;
 }
 
-export interface BugData {
+export interface BugData extends TaskBase {
   severity: 'low' | 'medium' | 'high' | 'critical';
   reproductionSteps: string[];
   environment?: string;
 }
 
-export interface StoryData {
+export interface StoryData extends TaskBase {
   storyPoints: number;
   acceptanceCriteria: string[];
   epicId?: string;
 }
 
-export interface EpicData {
+export interface EpicData extends TaskBase {
   epicGoal: string;
   childStories: string[];
   estimatedDuration?: number; // in days
 }
+
+// Task type enum for factory method
+export type TaskType = 'task' | 'subtask' | 'bug' | 'story' | 'epic';
 
 // Validation schemas
 const TaskBaseSchema = z.object({
