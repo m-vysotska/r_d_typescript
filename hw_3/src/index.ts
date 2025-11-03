@@ -1,8 +1,10 @@
 import { TaskController } from './modules/tasks/task.controller';
-import { Task, Subtask, Bug, Story, Epic } from './modules/tasks/task.classes';
+import { TaskService } from './modules/tasks/task.service';
+import { Task, Subtask, Bug, Story, Epic } from './modules/tasks/models';
 import { Status, Priority } from './modules/tasks/task.types';
 
-const taskController = new TaskController();
+const taskService = new TaskService();
+const taskController = new TaskController(taskService);
 
 console.log("=== Task Management System ===");
 
