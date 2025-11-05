@@ -65,30 +65,22 @@ export class TaskService {
         if (!specificData || !('parentTaskId' in specificData)) {
           throw new Error('Subtask requires SubtaskData with parentTaskId');
         }
-        // Extract only subtask-specific fields (omit TaskBase fields)
-        const { parentTaskId, estimatedHours } = specificData as SubtaskData;
-        return new Subtask(baseTask, { parentTaskId, estimatedHours });
+        return new Subtask(baseTask, specificData);
       case 'bug':
         if (!specificData || !('severity' in specificData)) {
           throw new Error('Bug requires BugData with severity');
         }
-        // Extract only bug-specific fields
-        const { severity, reproductionSteps, environment } = specificData as BugData;
-        return new Bug(baseTask, { severity, reproductionSteps, environment });
+        return new Bug(baseTask, specificData);
       case 'story':
         if (!specificData || !('storyPoints' in specificData)) {
           throw new Error('Story requires StoryData with storyPoints');
         }
-        // Extract only story-specific fields
-        const { storyPoints, acceptanceCriteria, epicId } = specificData as StoryData;
-        return new Story(baseTask, { storyPoints, acceptanceCriteria, epicId });
+        return new Story(baseTask, specificData);
       case 'epic':
         if (!specificData || !('epicGoal' in specificData)) {
           throw new Error('Epic requires EpicData with epicGoal');
         }
-        // Extract only epic-specific fields
-        const { epicGoal, childStories, estimatedDuration } = specificData as EpicData;
-        return new Epic(baseTask, { epicGoal, childStories, estimatedDuration });
+        return new Epic(baseTask, specificData);
       default:
         throw new Error(`Unknown task type: ${type}`);
     }
@@ -109,13 +101,13 @@ export class TaskService {
   getTaskByIdAsValidated(id: string): ValidatedTask | undefined {
     const task = this.getTaskById(id);
     if (!task) return undefined;
-    return task.taskBase as ValidatedTask;
+    return task.taskBase;
   }
 
   createTask(newTask: TaskCreateInput): ValidatedTask {
     const taskObj = this.createTaskFromType('task', newTask);
     this.addTask(taskObj);
-    return taskObj.taskBase as ValidatedTask;
+    return taskObj.taskBase
   }
 
   updateTask(id: string, updateInput: TaskUpdateInput): ValidatedTask | undefined {
@@ -139,7 +131,7 @@ export class TaskService {
     }
 
     console.log("Task updated:", task.getTaskInfo());
-    return updatedBase as ValidatedTask;
+    return updatedBase;
   }
 
   deleteTask(id: string): boolean {
@@ -189,6 +181,6 @@ export class TaskService {
   }
 
   getAllTasksAsValidated(): ValidatedTask[] {
-    return this.tasks.map(task => task.taskBase as ValidatedTask);
+    return this.tasks.map(task => task.taskBase);
   }
 }

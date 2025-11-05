@@ -11,7 +11,7 @@ export class Bug extends Task {
     // Validate only the bug-specific fields
     validateData(bugSpecificData, BugDataSchema, 'Bug');
     // Combine TaskBase with bug-specific data to create full BugData
-    this._bugData = { ...taskData, ...bugSpecificData } as BugData;
+    this._bugData = { ...taskData, ...bugSpecificData };
   }
 
   getTaskInfo(): string {

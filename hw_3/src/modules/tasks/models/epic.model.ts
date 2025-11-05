@@ -12,7 +12,7 @@ export class Epic extends Task {
     // Validate only the epic-specific fields
     validateData(epicSpecificData, EpicDataSchema, 'Epic');
     // Combine TaskBase with epic-specific data to create full EpicData
-    this._epicData = { ...taskData, ...epicSpecificData } as EpicData;
+    this._epicData = { ...taskData, ...epicSpecificData };
   }
 
   getTaskInfo(): string {

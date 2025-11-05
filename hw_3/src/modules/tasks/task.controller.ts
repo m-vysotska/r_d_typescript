@@ -51,7 +51,7 @@ export class TaskController {
   filterTasks(options: TaskFilterOptions): ValidatedTask[] {
     try {
       const tasks = this.taskService.filterTasks(options);
-      return tasks.map(task => task.taskBase as ValidatedTask);
+      return tasks.map(task => task.taskBase);
     } catch (error) {
       console.error('Error filtering tasks:', error);
       throw error;

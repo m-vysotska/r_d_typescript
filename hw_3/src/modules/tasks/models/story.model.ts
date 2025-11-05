@@ -11,7 +11,7 @@ export class Story extends Task {
     // Validate only the story-specific fields
     validateData(storySpecificData, StoryDataSchema, 'Story');
     // Combine TaskBase with story-specific data to create full StoryData
-    this._storyData = { ...taskData, ...storySpecificData } as StoryData;
+    this._storyData = { ...taskData, ...storySpecificData };
   }
 
   getTaskInfo(): string {

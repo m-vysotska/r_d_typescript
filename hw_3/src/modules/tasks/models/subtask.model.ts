@@ -11,7 +11,7 @@ export class Subtask extends Task {
     // Validate only the subtask-specific fields
     validateData(subtaskSpecificData, SubtaskDataSchema, 'Subtask');
     // Combine TaskBase with subtask-specific data to create full SubtaskData
-    this._subtaskData = { ...taskData, ...subtaskSpecificData } as SubtaskData;
+    this._subtaskData = { ...taskData, ...subtaskSpecificData };
   }
 
   getTaskInfo(): string {
