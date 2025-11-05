@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "ES2020",
     "module": "ES2020",
-    "moduleResolution": "node",
+    "moduleResolution": "nodenext",
     "lib": ["ES2020"],
     "rootDir": "./",
     "outDir": "./dist",
@@ -18,4 +18,3 @@
   "include": ["**/*.ts"],
   "exclude": ["node_modules", "dist"]
 }
-

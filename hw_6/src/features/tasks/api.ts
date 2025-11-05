@@ -1,4 +1,4 @@
-import { Task, TaskCreateInput } from './types';
+import type { Task, TaskCreateInput } from './types';
 
 const API_BASE_URL = 'http://localhost:3000';
 
@@ -81,4 +81,4 @@ export async function createTask(taskData: TaskCreateInput): Promise<Task> {
 }
 
 
-export { TaskCreateInput };
+export type { TaskCreateInput };
