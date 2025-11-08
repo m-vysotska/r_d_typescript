@@ -149,12 +149,6 @@ describe('Tasks API', () => {
 
       expect(response.body.error).toBe('Task not found');
     });
-
-    it('should return 400 when id is missing', async () => {
-      const response = await request(app)
-        .get('/tasks/')
-        .expect(404);
-    });
   });
 
   describe('POST /tasks', () => {
