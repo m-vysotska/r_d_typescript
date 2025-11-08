@@ -1,0 +1,8 @@
+node_modules/
+dist/
+*.sqlite
+*.sqlite-journal
+test-database.sqlite
+database.sqlite
+.env
+
