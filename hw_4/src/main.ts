@@ -1,5 +1,5 @@
-import { getTasks, createTask } from './api.ts';
-import type { Task, TaskCreateInput } from './api.ts';
+import { getTasks, createTask, DEFAULT_STATUS, DEFAULT_PRIORITY } from './api.ts';
+import type { Priority, Status, Task, TaskCreateInput } from './api.ts';
 
 const taskListElement = document.getElementById('task-list');
 const taskForm = document.getElementById('task-form') as HTMLFormElement;
@@ -19,16 +19,18 @@ function renderTasks(tasks: Task[]) {
     const createdAt = new Date(task.createdAt).toLocaleDateString();
     const deadline = new Date(task.deadline).toLocaleDateString();
     
-    const statusClass = `status-${task.status.replace('_', '-')}`;
-    const priorityClass = `priority-${task.priority}`;
+    const status = task.status || DEFAULT_STATUS;
+    const priority = task.priority || DEFAULT_PRIORITY;
+    const statusClass = `status-${status.replace('_', '-')}`;
+    const priorityClass = `priority-${priority}`;
 
     return `
       <div class="task-item">
         <h3>${task.title}</h3>
         <p>${task.description}</p>
         <div class="task-meta">
-          <span class="badge ${statusClass}">${task.status.replace('_', ' ')}</span>
-          <span class="badge ${priorityClass}">${task.priority}</span>
+          <span class="badge ${statusClass}">${status.replace('_', ' ')}</span>
+          <span class="badge ${priorityClass}">${priority}</span>
           <span><strong>Created:</strong> ${createdAt}</span>
           <span><strong>Deadline:</strong> ${deadline}</span>
         </div>
@@ -61,13 +63,14 @@ taskForm.addEventListener('submit', async (e) => {
   e.preventDefault();
 
   const formData = new FormData(taskForm);
+  const data = Object.fromEntries(formData);
   
   const taskData: TaskCreateInput = {
-    title: formData.get('title') as string,
-    description: formData.get('description') as string,
-    status: formData.get('status') as any,
-    priority: formData.get('priority') as any,
-    deadline: formData.get('deadline') as string,
+    title: String(data.title || ''),
+    description: String(data.description || ''),
+    status: data.status ? (data.status as Status) : undefined,
+    priority: data.priority ? (data.priority as Priority) : undefined,
+    deadline: String(data.deadline || ''),
   };
 
   try {

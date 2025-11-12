@@ -13,15 +13,13 @@ export const Priority = {
 };
 export type Priority = typeof Priority[keyof typeof Priority];
 
-export type Task = {
-  id: string;
-  title: string;
-  description: string;
-  status: Status;
-  priority: Priority;
-  deadline: string;
-  createdAt: string;
-  updatedAt?: string;
+export const DEFAULT_STATUS = Status.Todo;
+export const DEFAULT_PRIORITY = Priority.Medium;
+
+export type Task = TaskCreateInput & {
+  id: string
+  createdAt: string | Date 
+  updatedAt?: string | Date
 }
 
 export type TaskCreateInput = {
@@ -68,8 +66,8 @@ export async function getTaskById(id: string): Promise<Task> {
 export async function createTask(taskData: TaskCreateInput): Promise<Task> {
   const taskToCreate = {
     ...taskData,
-    status: taskData.status || Status.Todo,
-    priority: taskData.priority || Priority.Medium,
+    status: taskData.status || DEFAULT_STATUS,
+    priority: taskData.priority || DEFAULT_PRIORITY,
     createdAt: new Date().toISOString(),
   };
 
