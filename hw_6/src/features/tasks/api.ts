@@ -53,7 +53,7 @@ export async function createTask(taskData: TaskCreateInput): Promise<Task> {
     ...taskData,
     status: taskData.status || 'todo',
     priority: taskData.priority || 'medium',
-    createdAt: new Date().toISOString(),
+    createdAt: new Date(),
   };
 
   try {

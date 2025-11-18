@@ -18,8 +18,8 @@ export const DEFAULT_PRIORITY = Priority.Medium;
 
 export type Task = TaskCreateInput & {
   id: string
-  createdAt: string | Date 
-  updatedAt?: string | Date
+  createdAt: string 
+  updatedAt?: string
 }
 
 export type TaskCreateInput = {
@@ -68,7 +68,7 @@ export async function createTask(taskData: TaskCreateInput): Promise<Task> {
     ...taskData,
     status: taskData.status || DEFAULT_STATUS,
     priority: taskData.priority || DEFAULT_PRIORITY,
-    createdAt: new Date().toISOString(),
+    createdAt: new Date(),
   };
 
   const response = await fetch(`${API_BASE_URL}/tasks`, {
@@ -97,7 +97,7 @@ export async function updateTask(id: string, taskData: Task): Promise<Task> {
     },
     body: JSON.stringify({
       ...taskData,
-      updatedAt: new Date().toISOString(),
+      updatedAt: new Date(),
     }),
   });
 
@@ -119,7 +119,7 @@ export async function patchTask(id: string, taskData: Partial<TaskUpdateInput>):
     },
     body: JSON.stringify({
       ...taskData,
-      updatedAt: new Date().toISOString(),
+      updatedAt: new Date(),
     }),
   });
 
