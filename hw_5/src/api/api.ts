@@ -1,36 +1,4 @@
-export const Status = {
-  Todo: 'todo',
-  InProgress: 'in_progress',
-  Done: 'done'
-};
-export type Status = typeof Status[keyof typeof Status];
-
-export const Priority = {
-  Low: 'low',
-  Medium: 'medium',
-  High: 'high',
-  Urgent: 'urgent'
-};
-export type Priority = typeof Priority[keyof typeof Priority];
-
-export type Task = {
-  id: string;
-  title: string;
-  description: string;
-  status: Status;
-  priority: Priority;
-  deadline: string;
-  createdAt: string;
-  updatedAt?: string;
-}
-
-export type TaskCreateInput = {
-  title: string;
-  description: string;
-  status?: Status;
-  priority?: Priority;
-  deadline: string;
-}
+import { Priority, Status, type Task, type TaskCreateInput } from "../types/task.types";
 
 const API_BASE_URL = 'http://localhost:3000';
 
@@ -42,7 +10,7 @@ export async function createTask(taskData: TaskCreateInput): Promise<Task> {
     ...taskData,
     status: taskData.status || Status.Todo,
     priority: taskData.priority || Priority.Medium,
-    createdAt: new Date().toISOString(),
+    createdAt: new Date(),
   };
 
   try {

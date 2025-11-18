@@ -1,33 +1,9 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { createTask, type TaskCreateInput } from '../api/api';
+import { createTask } from '../api/api';
 import { Status, Priority } from '../types/task.types';
 import './CreateTaskForm.css';
-
-const taskFormSchema = z.object({
-  title: z.string().min(1, 'Title is required').max(100, 'Title must be less than 100 characters'),
-  description: z.string().min(1, 'Description is required').max(1000, 'Description must be less than 1000 characters'),
-  status: z.enum(['todo', 'in_progress', 'done']).optional(),
-  priority: z.enum(['low', 'medium', 'high', 'urgent']).optional(),
-  deadline: z.string().min(1, 'Deadline is required').refine(
-    (date) => {
-      const selectedDate = new Date(date);
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      return selectedDate >= today;
-    },
-    {
-      message: 'Deadline cannot be in the past',
-    }
-  ),
-});
-
-type TaskFormData = z.infer<typeof taskFormSchema>;
-
-interface CreateTaskFormProps {
-  onTaskCreated?: () => void;
-}
+import { taskFormSchema, type CreateTaskFormProps, type TaskFormData } from '../types/task-form.types';
 
 export function CreateTaskForm({ onTaskCreated }: CreateTaskFormProps) {
   const {
@@ -46,15 +22,7 @@ export function CreateTaskForm({ onTaskCreated }: CreateTaskFormProps) {
 
   const onSubmit = async (data: TaskFormData) => {
     try {
-      const taskData: TaskCreateInput = {
-        title: data.title,
-        description: data.description,
-        status: data.status,
-        priority: data.priority,
-        deadline: data.deadline,
-      };
-
-      await createTask(taskData);
+      await createTask(data);
       reset();
       if (onTaskCreated) {
         onTaskCreated();
