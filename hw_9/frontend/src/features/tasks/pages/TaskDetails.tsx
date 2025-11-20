@@ -1,14 +1,16 @@
 import { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { getTaskById } from '../api';
+import { useParams, Link, useNavigate } from 'react-router-dom';
+import { getTaskById, deleteTask } from '../api';
 import type { Task } from '../types';
 import './TaskDetails.css';
 
 export function TaskDetails() {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const [task, setTask] = useState<Task | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -26,6 +28,23 @@ export function TaskDetails() {
       setError(err instanceof Error ? err.message : 'Failed to load task');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!id || !task) return;
+
+    const confirmed = window.confirm(`Are you sure you want to delete "${task.title}"? This action cannot be undone.`);
+    if (!confirmed) return;
+
+    try {
+      setDeleting(true);
+      await deleteTask(id);
+      navigate('/tasks');
+    } catch (err) {
+      setDeleting(false);
+      const errorMessage = err instanceof Error ? err.message : 'Failed to delete task';
+      alert(errorMessage);
     }
   };
 
@@ -66,9 +85,23 @@ export function TaskDetails() {
 
   return (
     <div className="task-details-container">
-      <Link to="/tasks" className="back-button">
-        ← Back to Task List
-      </Link>
+      <div className="task-details-header">
+        <Link to="/tasks" className="back-button">
+          ← Back to Task List
+        </Link>
+        <div className="task-actions">
+          <Link to={`/tasks/${id}/edit`} className="edit-button">
+            Edit Task
+          </Link>
+          <button
+            onClick={handleDelete}
+            disabled={deleting}
+            className="delete-button"
+          >
+            {deleting ? 'Deleting...' : 'Delete Task'}
+          </button>
+        </div>
+      </div>
 
       <div className="task-details-card">
         <h1>{task.title}</h1>

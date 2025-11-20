@@ -59,8 +59,13 @@ describe('TasksList', () => {
     // Check that all required fields are present
     expect(screen.getByText('Description 1')).toBeInTheDocument();
     expect(screen.getByText('Description 2')).toBeInTheDocument();
-    expect(screen.getByText('todo')).toBeInTheDocument();
-    expect(screen.getByText('in progress')).toBeInTheDocument();
+    
+    // Check that tasks are displayed in correct columns (status-based)
+    expect(screen.getByText('To Do')).toBeInTheDocument();
+    expect(screen.getByText('In Progress')).toBeInTheDocument();
+    expect(screen.getByText('Done')).toBeInTheDocument();
+    
+    // Check priority badges
     expect(screen.getByText('low')).toBeInTheDocument();
     expect(screen.getByText('high')).toBeInTheDocument();
 

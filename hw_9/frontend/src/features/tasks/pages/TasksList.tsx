@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { getTasks } from '../api';
+import { getTasks, deleteTask } from '../api';
+import { Status } from '../types';
 import type { Task } from '../types';
 import './TasksList.css';
 
@@ -23,6 +24,20 @@ export function TasksList() {
       setError(err instanceof Error ? err.message : 'Failed to load tasks');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDelete = async (taskId: string, taskTitle: string) => {
+    const confirmed = window.confirm(`Are you sure you want to delete "${taskTitle}"? This action cannot be undone.`);
+    if (!confirmed) return;
+
+    try {
+      await deleteTask(taskId);
+      // Reload tasks after deletion
+      await loadTasks();
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to delete task';
+      alert(errorMessage);
     }
   };
 
@@ -63,29 +78,144 @@ export function TasksList() {
           </Link>
         </div>
       ) : (
-        <div className="tasks-grid">
-          {tasks.map((task) => (
-            <Link
-              key={task.id}
-              to={`/tasks/${task.id}`}
-              className="task-card"
-              data-testid={`task-card-${task.id}`}
-            >
-              <h3>{task.title}</h3>
-              <p className="task-description">{task.description}</p>
-              <div className="task-meta">
-                <span className={`badge status-${task.status.replace('_', '-')}`}>
-                  {task.status.replace('_', ' ')}
-                </span>
-                <span className={`badge priority-${task.priority}`}>
-                  {task.priority}
-                </span>
-                <span className="task-deadline">
-                  Deadline: {new Date(task.deadline).toLocaleDateString()}
-                </span>
-              </div>
-            </Link>
-          ))}
+        <div className="tasks-columns">
+          <div className="tasks-column">
+            <div className="column-header">
+              <h2>To Do</h2>
+              <span className="task-count">{tasks.filter(t => t.status === Status.Todo).length}</span>
+            </div>
+            <div className="tasks-list">
+              {tasks
+                .filter(task => task.status === Status.Todo)
+                .map((task) => (
+                  <div key={task.id} className="task-card-wrapper">
+                    <Link
+                      to={`/tasks/${task.id}`}
+                      className="task-card"
+                      data-testid={`task-card-${task.id}`}
+                    >
+                      <h3>{task.title}</h3>
+                      <p className="task-description">{task.description}</p>
+                      <div className="task-meta">
+                        <span className={`badge priority-${task.priority}`}>
+                          {task.priority}
+                        </span>
+                        <span className="task-deadline">
+                          {new Date(task.deadline).toLocaleDateString()}
+                        </span>
+                      </div>
+                    </Link>
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleDelete(task.id, task.title);
+                      }}
+                      className="task-delete-button"
+                      title="Delete task"
+                      aria-label={`Delete task ${task.title}`}
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+              {tasks.filter(t => t.status === Status.Todo).length === 0 && (
+                <div className="empty-column">No tasks</div>
+              )}
+            </div>
+          </div>
+
+          <div className="tasks-column">
+            <div className="column-header">
+              <h2>In Progress</h2>
+              <span className="task-count">{tasks.filter(t => t.status === Status.InProgress).length}</span>
+            </div>
+            <div className="tasks-list">
+              {tasks
+                .filter(task => task.status === Status.InProgress)
+                .map((task) => (
+                  <div key={task.id} className="task-card-wrapper">
+                    <Link
+                      to={`/tasks/${task.id}`}
+                      className="task-card"
+                      data-testid={`task-card-${task.id}`}
+                    >
+                      <h3>{task.title}</h3>
+                      <p className="task-description">{task.description}</p>
+                      <div className="task-meta">
+                        <span className={`badge priority-${task.priority}`}>
+                          {task.priority}
+                        </span>
+                        <span className="task-deadline">
+                          {new Date(task.deadline).toLocaleDateString()}
+                        </span>
+                      </div>
+                    </Link>
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleDelete(task.id, task.title);
+                      }}
+                      className="task-delete-button"
+                      title="Delete task"
+                      aria-label={`Delete task ${task.title}`}
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+              {tasks.filter(t => t.status === Status.InProgress).length === 0 && (
+                <div className="empty-column">No tasks</div>
+              )}
+            </div>
+          </div>
+
+          <div className="tasks-column">
+            <div className="column-header">
+              <h2>Done</h2>
+              <span className="task-count">{tasks.filter(t => t.status === Status.Done).length}</span>
+            </div>
+            <div className="tasks-list">
+              {tasks
+                .filter(task => task.status === Status.Done)
+                .map((task) => (
+                  <div key={task.id} className="task-card-wrapper">
+                    <Link
+                      to={`/tasks/${task.id}`}
+                      className="task-card"
+                      data-testid={`task-card-${task.id}`}
+                    >
+                      <h3>{task.title}</h3>
+                      <p className="task-description">{task.description}</p>
+                      <div className="task-meta">
+                        <span className={`badge priority-${task.priority}`}>
+                          {task.priority}
+                        </span>
+                        <span className="task-deadline">
+                          {new Date(task.deadline).toLocaleDateString()}
+                        </span>
+                      </div>
+                    </Link>
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleDelete(task.id, task.title);
+                      }}
+                      className="task-delete-button"
+                      title="Delete task"
+                      aria-label={`Delete task ${task.title}`}
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+              {tasks.filter(t => t.status === Status.Done).length === 0 && (
+                <div className="empty-column">No tasks</div>
+              )}
+            </div>
+          </div>
         </div>
       )}
     </div>

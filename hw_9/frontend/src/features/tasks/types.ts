@@ -32,3 +32,5 @@ export type TaskCreateInput = {
   deadline: string;
 }
 
+export type TaskUpdateInput = Partial<Omit<Task, 'id' | 'createdAt'>>;
+

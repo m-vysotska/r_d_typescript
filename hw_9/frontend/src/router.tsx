@@ -3,6 +3,7 @@ import { MainLayout } from './shared/layouts/MainLayout';
 import { TasksList } from './features/tasks/pages/TasksList';
 import { TaskDetails } from './features/tasks/pages/TaskDetails';
 import { TaskCreate } from './features/tasks/pages/TaskCreate';
+import { TaskEdit } from './features/tasks/pages/TaskEdit';
 
 export const router = createBrowserRouter([
   {
@@ -24,6 +25,10 @@ export const router = createBrowserRouter([
       {
         path: 'tasks/:id',
         element: <TaskDetails />,
+      },
+      {
+        path: 'tasks/:id/edit',
+        element: <TaskEdit />,
       },
     ],
   },
