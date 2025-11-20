@@ -55,6 +55,13 @@ export default app;
 if (process.env.NODE_ENV !== 'test') {
   app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
+  }).on('error', (err: NodeJS.ErrnoException) => {
+    if (err.code === 'EADDRINUSE') {
+      console.error(`Port ${PORT} is already in use. Please stop the process using this port or set a different PORT in environment variables.`);
+      process.exit(1);
+    } else {
+      throw err;
+    }
   });
 }
 

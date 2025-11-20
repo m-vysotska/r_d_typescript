@@ -37,12 +37,12 @@ export function TaskCreate() {
     resolver: zodResolver(taskFormSchema),
     mode: 'onChange',
     defaultValues: {
-      status: Status.Todo,
-      priority: Priority.Medium,
+      status: 'todo' as const,
+      priority: 'medium' as const,
     },
   });
 
-  const onSubmit = async (data: TaskFormData) => {
+  const onSubmit = async (data: TaskFormData): Promise<void> => {
     try {
       const taskData: TaskCreateInput = {
         title: data.title,

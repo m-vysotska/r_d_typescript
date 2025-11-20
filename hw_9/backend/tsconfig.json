@@ -15,6 +15,6 @@
     "sourceMap": true
   },
   "include": ["**/*.ts"],
-  "exclude": ["node_modules", "dist", "tests"]
+  "exclude": ["node_modules", "dist", "tests", "eslint.config.ts", "jest.config.js", "**/*.config.ts", "**/*.config.js"]
 }
 
