@@ -17,14 +17,8 @@ export const Priority = {
 
 export type Priority = typeof Priority[keyof typeof Priority];
 
-export type Task = {
+export type Task = Required<TaskCreateInput> &{
   id: string;
-  title: string;
-  description: string;
-  status: Status;
-  priority: Priority;
-  deadline: string;
-  assigneeId: string;
   createdAt: string;
   updatedAt?: string;
 };

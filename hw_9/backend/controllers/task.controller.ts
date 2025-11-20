@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { taskService } from '../services/task.service.js';
-import { TaskQueryFilters, taskCreateSchema, taskUpdateSchema, taskQueryFiltersSchema } from '../types/task.types.js';
+import { taskCreateSchema, taskUpdateSchema, taskQueryFiltersSchema } from '../types/task.schema.js';
 import { AppError } from '../common/AppError.js';
 
 export const getAllTasks = async (req: Request, res: Response, next: NextFunction): Promise<void> => {

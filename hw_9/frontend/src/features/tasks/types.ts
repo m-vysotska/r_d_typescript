@@ -13,8 +13,13 @@ export const Priority = {
 };
 export type Priority = typeof Priority[keyof typeof Priority];
 
-export type Task = Required<TaskCreateInput> & {
+export type Task = {
   id: string;
+  title: string;
+  description: string;
+  status: Status;
+  priority: Priority;
+  deadline: string;
   createdAt: string;
   updatedAt?: string;
 }
