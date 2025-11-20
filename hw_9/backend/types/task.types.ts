@@ -3,6 +3,7 @@ export const Status = {
   InProgress: 'in_progress',
   Done: 'done'
 };
+
 export type Status = typeof Status[keyof typeof Status];
 
 export const Priority = {
@@ -11,13 +12,14 @@ export const Priority = {
   High: 'high',
   Urgent: 'urgent'
 };
+
 export type Priority = typeof Priority[keyof typeof Priority];
 
 export type Task = Required<TaskCreateInput> & {
   id: string;
   createdAt: string;
   updatedAt?: string;
-}
+};
 
 export type TaskCreateInput = {
   title: string;
@@ -25,5 +27,12 @@ export type TaskCreateInput = {
   status?: Status;
   priority?: Priority;
   deadline: string;
-}
+};
 
+export type TaskUpdateInput = Partial<Omit<Task, 'id' | 'createdAt'>>;
+
+export type TaskQueryFilters = {
+  createdAt?: string;
+  status?: Status;
+  priority?: Priority;
+};
