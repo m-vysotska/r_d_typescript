@@ -1,4 +1,5 @@
 import { Task, TaskCreateInput, TaskUpdateInput, TaskQueryFilters, Status, Priority } from '../types/task.types.js';
+import AppError from '../common/AppError.js';
 
 class TaskService {
   private tasks: Task[] = [];
@@ -27,9 +28,12 @@ class TaskService {
     return filteredTasks;
   }
 
-  getTaskById(id: string): Task | null {
+  getTaskById(id: string): Task {
     const task = this.tasks.find(task => task.id === id);
-    return task || null;
+    if (!task) {
+      throw new AppError('Task not found', 404);
+    }
+    return task;
   }
 
   createTask(taskData: TaskCreateInput): Task {
@@ -47,11 +51,11 @@ class TaskService {
     return newTask;
   }
 
-  updateTask(id: string, taskData: TaskUpdateInput): Task | null {
+  updateTask(id: string, taskData: TaskUpdateInput): Task {
     const taskIndex = this.tasks.findIndex(task => task.id === id);
 
     if (taskIndex === -1) {
-      return null;
+      throw new AppError('Task not found', 404);
     }
 
     const updatedTask: Task = {
@@ -64,15 +68,14 @@ class TaskService {
     return updatedTask;
   }
 
-  deleteTask(id: string): boolean {
+  deleteTask(id: string): void {
     const taskIndex = this.tasks.findIndex(task => task.id === id);
 
     if (taskIndex === -1) {
-      return false;
+      throw new AppError('Task not found', 404);
     }
 
     this.tasks.splice(taskIndex, 1);
-    return true;
   }
 
   clearTasks(): void {

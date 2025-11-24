@@ -4,6 +4,7 @@ import morgan from 'morgan';
 import { ZodError } from 'zod';
 import taskRoutes from './routes/task.routes.js';
 import { initializeDatabase } from './config/database.js';
+import AppError from './common/AppError.js';
 import './models/User.model.js';
 import './models/Task.model.js';
 
@@ -32,6 +33,13 @@ app.use((error: Error, req: Request, res: Response, next: NextFunction): void =>
         path: err.path.join('.'),
         message: err.message
       }))
+    });
+    return;
+  }
+
+  if (error instanceof AppError) {
+    res.status(error.statusCode).json({
+      error: error.message
     });
     return;
   }

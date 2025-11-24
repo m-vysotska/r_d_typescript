@@ -3,7 +3,7 @@ import cors from 'cors';
 import morgan from 'morgan';
 import { ZodError } from 'zod';
 import taskRoutes from './routes/task.routes.js';
-import { AppError } from './common/AppError.js';
+import AppError from './common/AppError.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;

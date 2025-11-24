@@ -1,11 +1,13 @@
 import { Task } from '../models/Task.model.js';
 import { User } from '../models/User.model.js';
 import { TaskCreateInput, TaskUpdateInput, TaskQueryFilters, Status, Priority } from '../types/task.schema.js';
-import { Op } from 'sequelize';
+import { Op, WhereOptions } from 'sequelize';
+import type { TaskAttributes } from '../models/Task.model.js';
+import AppError from '../common/AppError.js';
 
 class TaskService {
   async getAllTasks (filters?: TaskQueryFilters): Promise<Task[]> {
-    const whereClause: any = {};
+    const whereClause: WhereOptions<TaskAttributes> = {};
 
     if (filters) {
       if (filters.status) {
@@ -41,7 +43,7 @@ class TaskService {
     return tasks;
   }
 
-  async getTaskById (id: string): Promise<Task | null> {
+  async getTaskById (id: string): Promise<Task> {
     const task = await Task.findByPk(id, {
       include: [
         {
@@ -52,13 +54,17 @@ class TaskService {
       ]
     });
 
+    if (!task) {
+      throw new AppError('Task not found', 404);
+    }
+
     return task;
   }
 
   async createTask (taskData: TaskCreateInput): Promise<Task> {
     const assignee = await User.findByPk(taskData.assigneeId);
     if (!assignee) {
-      throw new Error('Assignee not found');
+      throw new AppError('Assignee not found', 400);
     }
 
     const newTask = await Task.create({
@@ -83,17 +89,17 @@ class TaskService {
     return taskWithAssignee!;
   }
 
-  async updateTask (id: string, taskData: TaskUpdateInput): Promise<Task | null> {
+  async updateTask (id: string, taskData: TaskUpdateInput): Promise<Task> {
     const task = await Task.findByPk(id);
 
     if (!task) {
-      return null;
+      throw new AppError('Task not found', 404);
     }
 
     if (taskData.assigneeId) {
       const assignee = await User.findByPk(taskData.assigneeId);
       if (!assignee) {
-        throw new Error('Assignee not found');
+        throw new AppError('Assignee not found', 400);
       }
     }
 
@@ -110,18 +116,17 @@ class TaskService {
       ]
     });
 
-    return updatedTask;
+    return updatedTask!;
   }
 
-  async deleteTask (id: string): Promise<boolean> {
+  async deleteTask (id: string): Promise<void> {
     const task = await Task.findByPk(id);
 
     if (!task) {
-      return false;
+      throw new AppError('Task not found', 404);
     }
 
     await task.destroy();
-    return true;
   }
 }
 
