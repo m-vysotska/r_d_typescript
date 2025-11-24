@@ -14,7 +14,8 @@
     "allowSyntheticDefaultImports": true,
     "sourceMap": true
   },
-  "include": ["**/*.ts"],
+  "include": ["**/*.ts", "**/*.d.ts"],
+  "typeRoots": ["./node_modules/@types", "./types"],
   "exclude": ["node_modules", "dist", "tests", "eslint.config.ts", "jest.config.js", "**/*.config.ts", "**/*.config.js"]
 }
 

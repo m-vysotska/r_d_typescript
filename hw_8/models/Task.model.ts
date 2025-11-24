@@ -1,7 +1,7 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 import { sequelize } from '../config/database.js';
 import { User } from './User.model.js';
-import { Status, Priority } from '../types/task.types.js';
+import { Status, Priority } from '../types/task.schema.js';
 
 export interface TaskAttributes {
   id: string;
@@ -15,7 +15,7 @@ export interface TaskAttributes {
   updatedAt?: Date;
 }
 
-export interface TaskCreationAttributes extends Optional<TaskAttributes, 'id' | 'status' | 'priority' | 'createdAt' | 'updatedAt'> {}
+export interface TaskCreationAttributes extends Optional<TaskAttributes, 'id' | 'status' | 'priority' | 'createdAt' | 'updatedAt'> { }
 
 export class Task extends Model<TaskAttributes, TaskCreationAttributes> implements TaskAttributes {
   public id!: string;
@@ -96,4 +96,7 @@ User.hasMany(Task, {
   foreignKey: 'assigneeId',
   as: 'tasks'
 });
+
+
+
 

@@ -11,6 +11,8 @@ export function TaskDetails() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -31,21 +33,29 @@ export function TaskDetails() {
     }
   };
 
-  const handleDelete = async () => {
-    if (!id || !task) return;
+  const handleDeleteClick = () => {
+    setShowDeleteConfirm(true);
+  };
 
-    const confirmed = window.confirm(`Are you sure you want to delete "${task.title}"? This action cannot be undone.`);
-    if (!confirmed) return;
+  const handleDeleteConfirm = async () => {
+    if (!id || !task) return;
 
     try {
       setDeleting(true);
+      setErrorMessage(null);
       await deleteTask(id);
+      setShowDeleteConfirm(false);
       navigate('/tasks');
     } catch (err) {
       setDeleting(false);
-      const errorMessage = err instanceof Error ? err.message : 'Failed to delete task';
-      alert(errorMessage);
+      const errorMsg = err instanceof Error ? err.message : 'Failed to delete task';
+      setErrorMessage(errorMsg);
+      setShowDeleteConfirm(false);
     }
+  };
+
+  const handleDeleteCancel = () => {
+    setShowDeleteConfirm(false);
   };
 
   if (loading) {
@@ -85,6 +95,46 @@ export function TaskDetails() {
 
   return (
     <div className="task-details-container">
+      {errorMessage && (
+        <div className="message message-error" role="alert">
+          <span>{errorMessage}</span>
+          <button
+            type="button"
+            className="message-close"
+            onClick={() => setErrorMessage(null)}
+            aria-label="Close error message"
+          >
+            ×
+          </button>
+        </div>
+      )}
+
+      {showDeleteConfirm && task && (
+        <div className="modal-overlay" onClick={handleDeleteCancel}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <h2>Confirm Delete</h2>
+            <p>Are you sure you want to delete "{task.title}"? This action cannot be undone.</p>
+            <div className="modal-actions">
+              <button
+                type="button"
+                className="modal-button modal-button-cancel"
+                onClick={handleDeleteCancel}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="modal-button modal-button-confirm"
+                onClick={handleDeleteConfirm}
+                disabled={deleting}
+              >
+                {deleting ? 'Deleting...' : 'Delete'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="task-details-header">
         <Link to="/tasks" className="back-button">
           ← Back to Task List
@@ -94,11 +144,11 @@ export function TaskDetails() {
             Edit Task
           </Link>
           <button
-            onClick={handleDelete}
+            onClick={handleDeleteClick}
             disabled={deleting}
             className="delete-button"
           >
-            {deleting ? 'Deleting...' : 'Delete Task'}
+            Delete Task
           </button>
         </div>
       </div>

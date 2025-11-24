@@ -9,6 +9,9 @@ export function TasksList() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [deleteConfirm, setDeleteConfirm] = useState<{ taskId: string; taskTitle: string } | null>(null);
 
   useEffect(() => {
     loadTasks();
@@ -27,18 +30,31 @@ export function TasksList() {
     }
   };
 
-  const handleDelete = async (taskId: string, taskTitle: string) => {
-    const confirmed = window.confirm(`Are you sure you want to delete "${taskTitle}"? This action cannot be undone.`);
-    if (!confirmed) return;
+  const handleDeleteClick = (taskId: string, taskTitle: string) => {
+    setDeleteConfirm({ taskId, taskTitle });
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!deleteConfirm) return;
 
     try {
-      await deleteTask(taskId);
+      setErrorMessage(null);
+      setSuccessMessage(null);
+      await deleteTask(deleteConfirm.taskId);
+      setDeleteConfirm(null);
+      setSuccessMessage(`Task "${deleteConfirm.taskTitle}" deleted successfully!`);
       // Reload tasks after deletion
       await loadTasks();
+      setTimeout(() => setSuccessMessage(null), 3000);
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to delete task';
-      alert(errorMessage);
+      const errorMsg = err instanceof Error ? err.message : 'Failed to delete task';
+      setErrorMessage(errorMsg);
+      setDeleteConfirm(null);
     }
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteConfirm(null);
   };
 
   if (loading) {
@@ -69,6 +85,58 @@ export function TasksList() {
           Create New Task
         </Link>
       </div>
+
+      {errorMessage && (
+        <div className="message message-error" role="alert">
+          <span>{errorMessage}</span>
+          <button
+            type="button"
+            className="message-close"
+            onClick={() => setErrorMessage(null)}
+            aria-label="Close error message"
+          >
+            ×
+          </button>
+        </div>
+      )}
+      {successMessage && (
+        <div className="message message-success">
+          <span>{successMessage}</span>
+          <button
+            type="button"
+            className="message-close"
+            onClick={() => setSuccessMessage(null)}
+            aria-label="Close success message"
+          >
+            ×
+          </button>
+        </div>
+      )}
+
+      {deleteConfirm && (
+        <div className="modal-overlay" onClick={handleDeleteCancel}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <h2>Confirm Delete</h2>
+            <p>Are you sure you want to delete "{deleteConfirm.taskTitle}"? This action cannot be undone.</p>
+            <div className="modal-actions">
+              <button
+                type="button"
+                className="modal-button modal-button-cancel"
+                onClick={handleDeleteCancel}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="modal-button modal-button-confirm"
+                onClick={handleDeleteConfirm}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {tasks.length === 0 ? (
         <div className="empty-state">
@@ -109,7 +177,7 @@ export function TasksList() {
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
-                        handleDelete(task.id, task.title);
+                        handleDeleteClick(task.id, task.title);
                       }}
                       className="task-delete-button"
                       title="Delete task"
@@ -155,7 +223,7 @@ export function TasksList() {
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
-                        handleDelete(task.id, task.title);
+                        handleDeleteClick(task.id, task.title);
                       }}
                       className="task-delete-button"
                       title="Delete task"
@@ -201,7 +269,7 @@ export function TasksList() {
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
-                        handleDelete(task.id, task.title);
+                        handleDeleteClick(task.id, task.title);
                       }}
                       className="task-delete-button"
                       title="Delete task"

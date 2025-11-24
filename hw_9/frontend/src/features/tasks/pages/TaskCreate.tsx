@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -28,6 +29,9 @@ type TaskFormData = z.infer<typeof taskFormSchema>;
 
 export function TaskCreate() {
   const navigate = useNavigate();
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
   const {
     register,
     handleSubmit,
@@ -44,6 +48,8 @@ export function TaskCreate() {
 
   const onSubmit = async (data: TaskFormData): Promise<void> => {
     try {
+      setErrorMessage(null);
+      setSuccessMessage(null);
       const taskData: TaskCreateInput = {
         title: data.title,
         description: data.description,
@@ -54,11 +60,15 @@ export function TaskCreate() {
 
       await createTask(taskData);
       reset();
-      navigate('/tasks');
+      setSuccessMessage('Task created successfully!');
+      setTimeout(() => {
+        navigate('/tasks');
+      }, 1000);
     } catch (error) {
       console.error('Failed to create task:', error);
-      const errorMessage = error instanceof Error ? error.message : 'Failed to create task. Please try again.';
-      alert(errorMessage);
+      const errorMsg = error instanceof Error ? error.message : 'Failed to create task. Please try again.';
+      setErrorMessage(errorMsg);
+      setSuccessMessage(null);
     }
   };
 
@@ -66,6 +76,32 @@ export function TaskCreate() {
     <div className="task-create-container">
       <h1>Create New Task</h1>
       <div className="create-task-form-container">
+        {errorMessage && (
+          <div className="message message-error" role="alert">
+            <span>{errorMessage}</span>
+            <button
+              type="button"
+              className="message-close"
+              onClick={() => setErrorMessage(null)}
+              aria-label="Close error message"
+            >
+              ×
+            </button>
+          </div>
+        )}
+        {successMessage && (
+          <div className="message message-success">
+            <span>{successMessage}</span>
+            <button
+              type="button"
+              className="message-close"
+              onClick={() => setSuccessMessage(null)}
+              aria-label="Close success message"
+            >
+              ×
+            </button>
+          </div>
+        )}
         <form onSubmit={handleSubmit(onSubmit)} className="task-form">
           <div className="form-group">
             <label htmlFor="title">

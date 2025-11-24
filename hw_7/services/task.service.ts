@@ -1,9 +1,9 @@
-import { Task, TaskCreateInput, TaskUpdateInput, TaskQueryFilters, Status, Priority } from '../types/task.types.js';
+import { Task, TaskCreateInput, TaskUpdateInput, TaskQueryFilters, Status, Priority } from '../types/task.schema.js';
 
 class TaskService {
   private tasks: Task[] = [];
 
-  getAllTasks(filters?: TaskQueryFilters): Task[] {
+  getAllTasks (filters?: TaskQueryFilters): Task[] {
     let filteredTasks = [...this.tasks];
 
     if (filters) {
@@ -27,12 +27,12 @@ class TaskService {
     return filteredTasks;
   }
 
-  getTaskById(id: string): Task | null {
+  getTaskById (id: string): Task | null {
     const task = this.tasks.find(task => task.id === id);
     return task || null;
   }
 
-  createTask(taskData: TaskCreateInput): Task {
+  createTask (taskData: TaskCreateInput): Task {
     const newTask: Task = {
       id: this.generateId(),
       title: taskData.title,
@@ -47,7 +47,7 @@ class TaskService {
     return newTask;
   }
 
-  updateTask(id: string, taskData: TaskUpdateInput): Task | null {
+  updateTask (id: string, taskData: TaskUpdateInput): Task | null {
     const taskIndex = this.tasks.findIndex(task => task.id === id);
 
     if (taskIndex === -1) {
@@ -64,7 +64,7 @@ class TaskService {
     return updatedTask;
   }
 
-  deleteTask(id: string): boolean {
+  deleteTask (id: string): boolean {
     const taskIndex = this.tasks.findIndex(task => task.id === id);
 
     if (taskIndex === -1) {
@@ -75,7 +75,7 @@ class TaskService {
     return true;
   }
 
-  private generateId(): string {
+  private generateId (): string {
     return Date.now().toString(36) + Math.random().toString(36).substring(2);
   }
 }

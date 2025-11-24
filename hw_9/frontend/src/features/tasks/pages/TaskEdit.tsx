@@ -33,6 +33,8 @@ export function TaskEdit() {
   const { id } = useParams<{ id: string }>();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const {
     register,
@@ -78,6 +80,8 @@ export function TaskEdit() {
     if (!id) return;
 
     try {
+      setErrorMessage(null);
+      setSuccessMessage(null);
       const taskData: TaskUpdateInput = {};
       
       if (data.title !== undefined && data.title !== '') taskData.title = data.title;
@@ -87,11 +91,15 @@ export function TaskEdit() {
       if (data.deadline !== undefined && data.deadline !== '') taskData.deadline = data.deadline;
 
       await updateTask(id, taskData);
-      navigate(`/tasks/${id}`);
+      setSuccessMessage('Task updated successfully!');
+      setTimeout(() => {
+        navigate(`/tasks/${id}`);
+      }, 1000);
     } catch (error) {
       console.error('Failed to update task:', error);
-      const errorMessage = error instanceof Error ? error.message : 'Failed to update task. Please try again.';
-      alert(errorMessage);
+      const errorMsg = error instanceof Error ? error.message : 'Failed to update task. Please try again.';
+      setErrorMessage(errorMsg);
+      setSuccessMessage(null);
     }
   };
 
@@ -121,6 +129,32 @@ export function TaskEdit() {
     <div className="task-edit-container">
       <h1>Edit Task</h1>
       <div className="edit-task-form-container">
+        {errorMessage && (
+          <div className="message message-error" role="alert">
+            <span>{errorMessage}</span>
+            <button
+              type="button"
+              className="message-close"
+              onClick={() => setErrorMessage(null)}
+              aria-label="Close error message"
+            >
+              ×
+            </button>
+          </div>
+        )}
+        {successMessage && (
+          <div className="message message-success">
+            <span>{successMessage}</span>
+            <button
+              type="button"
+              className="message-close"
+              onClick={() => setSuccessMessage(null)}
+              aria-label="Close success message"
+            >
+              ×
+            </button>
+          </div>
+        )}
         <form onSubmit={handleSubmit(onSubmit)} className="task-form">
           <div className="form-group">
             <label htmlFor="title">Title</label>

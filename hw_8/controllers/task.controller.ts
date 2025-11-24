@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { taskService } from '../services/task.service.js';
-import { TaskQueryFilters, taskCreateSchema, taskUpdateSchema, taskQueryFiltersSchema } from '../types/task.types.js';
+import { TaskQueryFilters, taskCreateSchema, taskUpdateSchema, taskQueryFiltersSchema } from '../types/task.schema.js';
 
 export const getAllTasks = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
@@ -96,4 +96,7 @@ export const deleteTask = async (req: Request, res: Response, next: NextFunction
     next(error);
   }
 };
+
+
+
 
