@@ -5,18 +5,14 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { getTaskById, updateTask, type TaskUpdateInput } from '../api';
 import { Status, Priority } from '../types';
+import './TaskEdit.css';
 
-const taskFormSchema = z.object({
-  title: z
-    .string()
-    .min(1, 'Title is required')
-    .max(100, 'Title must be less than 100 characters')
-    .optional(),
+const taskCreateSchema = z.object({
+  title: z.string().min(1, 'Title is required').max(100, 'Title must be less than 100 characters'),
   description: z
     .string()
     .min(1, 'Description is required')
-    .max(1000, 'Description must be less than 1000 characters')
-    .optional(),
+    .max(1000, 'Description must be less than 1000 characters'),
   status: z.enum(['todo', 'in_progress', 'done']).optional(),
   priority: z.enum(['low', 'medium', 'high', 'urgent']).optional(),
   deadline: z
@@ -24,7 +20,6 @@ const taskFormSchema = z.object({
     .min(1, 'Deadline is required')
     .refine(
       (date) => {
-        if (!date) return true;
         const selectedDate = new Date(date);
         const today = new Date();
         today.setHours(0, 0, 0, 0);
@@ -33,9 +28,10 @@ const taskFormSchema = z.object({
       {
         message: 'Deadline cannot be in the past',
       }
-    )
-    .optional(),
+    ),
 });
+
+const taskFormSchema = taskCreateSchema.partial();
 
 type TaskFormData = z.infer<typeof taskFormSchema>;
 
@@ -50,11 +46,11 @@ export function TaskEdit() {
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors },
     setValue,
   } = useForm<TaskFormData>({
     resolver: zodResolver(taskFormSchema),
-    mode: 'onChange',
+    mode: 'onBlur',
   });
 
   useEffect(() => {
@@ -95,9 +91,9 @@ export function TaskEdit() {
       setSuccessMessage(null);
       const taskData: TaskUpdateInput = {};
 
-      if (data.title !== undefined && data.title !== '') taskData.title = data.title;
-      if (data.description !== undefined && data.description !== '')
-        taskData.description = data.description;
+      if (data.title !== undefined && data.title.trim() !== '') taskData.title = data.title.trim();
+      if (data.description !== undefined && data.description.trim() !== '')
+        taskData.description = data.description.trim();
       if (data.status !== undefined) taskData.status = data.status;
       if (data.priority !== undefined) taskData.priority = data.priority;
       if (data.deadline !== undefined && data.deadline !== '') taskData.deadline = data.deadline;
@@ -235,7 +231,7 @@ export function TaskEdit() {
             <button type="button" onClick={() => navigate(-1)} className="cancel-button">
               Cancel
             </button>
-            <button type="submit" className="submit-button" disabled={!isValid}>
+            <button type="submit" className="submit-button">
               Update Task
             </button>
           </div>

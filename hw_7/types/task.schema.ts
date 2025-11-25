@@ -48,13 +48,7 @@ export const taskCreateSchema = z.object({
   deadline: z.string().min(1, 'Deadline is required')
 });
 
-export const taskUpdateSchema = z.object({
-  title: z.string().min(1).max(100).optional(),
-  description: z.string().min(1).max(1000).optional(),
-  status: z.enum(['todo', 'in_progress', 'done']).optional(),
-  priority: z.enum(['low', 'medium', 'high', 'urgent']).optional(),
-  deadline: z.string().min(1).optional()
-});
+export const taskUpdateSchema = taskCreateSchema.partial();
 
 export const taskQueryFiltersSchema = z.object({
   createdAt: z.string().optional(),
