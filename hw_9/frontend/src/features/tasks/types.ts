@@ -1,17 +1,17 @@
 export const Status = {
   Todo: 'todo',
   InProgress: 'in_progress',
-  Done: 'done'
+  Done: 'done',
 };
-export type Status = typeof Status[keyof typeof Status];
+export type Status = (typeof Status)[keyof typeof Status];
 
 export const Priority = {
   Low: 'low',
   Medium: 'medium',
   High: 'high',
-  Urgent: 'urgent'
+  Urgent: 'urgent',
 };
-export type Priority = typeof Priority[keyof typeof Priority];
+export type Priority = (typeof Priority)[keyof typeof Priority];
 
 export type Task = {
   id: string;
@@ -22,7 +22,7 @@ export type Task = {
   deadline: string;
   createdAt: string;
   updatedAt?: string;
-}
+};
 
 export type TaskCreateInput = {
   title: string;
@@ -30,7 +30,6 @@ export type TaskCreateInput = {
   status?: Status;
   priority?: Priority;
   deadline: string;
-}
+};
 
 export type TaskUpdateInput = Partial<Omit<Task, 'id' | 'createdAt'>>;
-

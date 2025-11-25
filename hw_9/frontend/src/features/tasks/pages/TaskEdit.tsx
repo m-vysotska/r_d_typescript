@@ -5,25 +5,36 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { getTaskById, updateTask, type TaskUpdateInput } from '../api';
 import { Status, Priority } from '../types';
-import './TaskEdit.css';
 
 const taskFormSchema = z.object({
-  title: z.string().min(1, 'Title is required').max(100, 'Title must be less than 100 characters').optional(),
-  description: z.string().min(1, 'Description is required').max(1000, 'Description must be less than 1000 characters').optional(),
+  title: z
+    .string()
+    .min(1, 'Title is required')
+    .max(100, 'Title must be less than 100 characters')
+    .optional(),
+  description: z
+    .string()
+    .min(1, 'Description is required')
+    .max(1000, 'Description must be less than 1000 characters')
+    .optional(),
   status: z.enum(['todo', 'in_progress', 'done']).optional(),
   priority: z.enum(['low', 'medium', 'high', 'urgent']).optional(),
-  deadline: z.string().min(1, 'Deadline is required').refine(
-    (date) => {
-      if (!date) return true;
-      const selectedDate = new Date(date);
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      return selectedDate >= today;
-    },
-    {
-      message: 'Deadline cannot be in the past',
-    }
-  ).optional(),
+  deadline: z
+    .string()
+    .min(1, 'Deadline is required')
+    .refine(
+      (date) => {
+        if (!date) return true;
+        const selectedDate = new Date(date);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        return selectedDate >= today;
+      },
+      {
+        message: 'Deadline cannot be in the past',
+      }
+    )
+    .optional(),
 });
 
 type TaskFormData = z.infer<typeof taskFormSchema>;
@@ -47,34 +58,34 @@ export function TaskEdit() {
   });
 
   useEffect(() => {
+    const loadTask = async (taskId: string) => {
+      try {
+        setLoading(true);
+        setError(null);
+        const task = await getTaskById(taskId);
+
+        // Set form values from task
+        setValue('title', task.title);
+        setValue('description', task.description);
+        setValue('status', task.status as 'todo' | 'in_progress' | 'done');
+        setValue('priority', task.priority as 'low' | 'medium' | 'high' | 'urgent');
+        // Convert deadline to date input format (YYYY-MM-DD)
+        const deadlineDate = new Date(task.deadline);
+        const year = deadlineDate.getFullYear();
+        const month = String(deadlineDate.getMonth() + 1).padStart(2, '0');
+        const day = String(deadlineDate.getDate()).padStart(2, '0');
+        setValue('deadline', `${year}-${month}-${day}`);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to load task');
+      } finally {
+        setLoading(false);
+      }
+    };
+
     if (id) {
       loadTask(id);
     }
-  }, [id]);
-
-  const loadTask = async (taskId: string) => {
-    try {
-      setLoading(true);
-      setError(null);
-      const task = await getTaskById(taskId);
-      
-      // Set form values from task
-      setValue('title', task.title);
-      setValue('description', task.description);
-      setValue('status', task.status as 'todo' | 'in_progress' | 'done');
-      setValue('priority', task.priority as 'low' | 'medium' | 'high' | 'urgent');
-      // Convert deadline to date input format (YYYY-MM-DD)
-      const deadlineDate = new Date(task.deadline);
-      const year = deadlineDate.getFullYear();
-      const month = String(deadlineDate.getMonth() + 1).padStart(2, '0');
-      const day = String(deadlineDate.getDate()).padStart(2, '0');
-      setValue('deadline', `${year}-${month}-${day}`);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load task');
-    } finally {
-      setLoading(false);
-    }
-  };
+  }, [id, setValue]);
 
   const onSubmit = async (data: TaskFormData): Promise<void> => {
     if (!id) return;
@@ -83,9 +94,10 @@ export function TaskEdit() {
       setErrorMessage(null);
       setSuccessMessage(null);
       const taskData: TaskUpdateInput = {};
-      
+
       if (data.title !== undefined && data.title !== '') taskData.title = data.title;
-      if (data.description !== undefined && data.description !== '') taskData.description = data.description;
+      if (data.description !== undefined && data.description !== '')
+        taskData.description = data.description;
       if (data.status !== undefined) taskData.status = data.status;
       if (data.priority !== undefined) taskData.priority = data.priority;
       if (data.deadline !== undefined && data.deadline !== '') taskData.deadline = data.deadline;
@@ -97,7 +109,8 @@ export function TaskEdit() {
       }, 1000);
     } catch (error) {
       console.error('Failed to update task:', error);
-      const errorMsg = error instanceof Error ? error.message : 'Failed to update task. Please try again.';
+      const errorMsg =
+        error instanceof Error ? error.message : 'Failed to update task. Please try again.';
       setErrorMessage(errorMsg);
       setSuccessMessage(null);
     }
@@ -164,13 +177,8 @@ export function TaskEdit() {
               {...register('title')}
               className={errors.title ? 'error' : ''}
               placeholder="Enter task title"
-              data-testid="title-input"
             />
-            {errors.title && (
-              <span className="error-message" data-testid="title-error">
-                {errors.title.message}
-              </span>
-            )}
+            {errors.title && <span className="error-message">{errors.title.message}</span>}
           </div>
 
           <div className="form-group">
@@ -181,32 +189,20 @@ export function TaskEdit() {
               className={errors.description ? 'error' : ''}
               placeholder="Enter task description"
               rows={4}
-              data-testid="description-input"
             />
             {errors.description && (
-              <span className="error-message" data-testid="description-error">
-                {errors.description.message}
-              </span>
+              <span className="error-message">{errors.description.message}</span>
             )}
           </div>
 
           <div className="form-group">
             <label htmlFor="status">Status</label>
-            <select
-              id="status"
-              {...register('status')}
-              className={errors.status ? 'error' : ''}
-              data-testid="status-select"
-            >
+            <select id="status" {...register('status')} className={errors.status ? 'error' : ''}>
               <option value={Status.Todo}>To Do</option>
               <option value={Status.InProgress}>In Progress</option>
               <option value={Status.Done}>Done</option>
             </select>
-            {errors.status && (
-              <span className="error-message" data-testid="status-error">
-                {errors.status.message}
-              </span>
-            )}
+            {errors.status && <span className="error-message">{errors.status.message}</span>}
           </div>
 
           <div className="form-group">
@@ -215,18 +211,13 @@ export function TaskEdit() {
               id="priority"
               {...register('priority')}
               className={errors.priority ? 'error' : ''}
-              data-testid="priority-select"
             >
               <option value={Priority.Low}>Low</option>
               <option value={Priority.Medium}>Medium</option>
               <option value={Priority.High}>High</option>
               <option value={Priority.Urgent}>Urgent</option>
             </select>
-            {errors.priority && (
-              <span className="error-message" data-testid="priority-error">
-                {errors.priority.message}
-              </span>
-            )}
+            {errors.priority && <span className="error-message">{errors.priority.message}</span>}
           </div>
 
           <div className="form-group">
@@ -236,29 +227,15 @@ export function TaskEdit() {
               type="date"
               {...register('deadline')}
               className={errors.deadline ? 'error' : ''}
-              data-testid="deadline-input"
             />
-            {errors.deadline && (
-              <span className="error-message" data-testid="deadline-error">
-                {errors.deadline.message}
-              </span>
-            )}
+            {errors.deadline && <span className="error-message">{errors.deadline.message}</span>}
           </div>
 
           <div className="form-actions">
-            <button
-              type="button"
-              onClick={() => navigate(-1)}
-              className="cancel-button"
-            >
+            <button type="button" onClick={() => navigate(-1)} className="cancel-button">
               Cancel
             </button>
-            <button
-              type="submit"
-              className="submit-button"
-              disabled={!isValid}
-              data-testid="submit-button"
-            >
+            <button type="submit" className="submit-button" disabled={!isValid}>
               Update Task
             </button>
           </div>
@@ -267,4 +244,3 @@ export function TaskEdit() {
     </div>
   );
 }
-

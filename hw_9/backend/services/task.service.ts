@@ -1,4 +1,11 @@
-import { Task, TaskCreateInput, TaskUpdateInput, TaskQueryFilters, Status, Priority } from '../types/task.types.js';
+import {
+  Task,
+  TaskCreateInput,
+  TaskUpdateInput,
+  TaskQueryFilters,
+  Status,
+  Priority,
+} from '../types/task.types.js';
 import AppError from '../common/AppError.js';
 
 class TaskService {
@@ -9,16 +16,16 @@ class TaskService {
 
     if (filters) {
       if (filters.status) {
-        filteredTasks = filteredTasks.filter(task => task.status === filters.status);
+        filteredTasks = filteredTasks.filter((task) => task.status === filters.status);
       }
 
       if (filters.priority) {
-        filteredTasks = filteredTasks.filter(task => task.priority === filters.priority);
+        filteredTasks = filteredTasks.filter((task) => task.priority === filters.priority);
       }
 
       if (filters.createdAt) {
         const filterDate = new Date(filters.createdAt);
-        filteredTasks = filteredTasks.filter(task => {
+        filteredTasks = filteredTasks.filter((task) => {
           const taskDate = new Date(task.createdAt);
           return taskDate.toISOString().split('T')[0] === filterDate.toISOString().split('T')[0];
         });
@@ -29,7 +36,7 @@ class TaskService {
   }
 
   getTaskById(id: string): Task {
-    const task = this.tasks.find(task => task.id === id);
+    const task = this.tasks.find((task) => task.id === id);
     if (!task) {
       throw new AppError('Task not found', 404);
     }
@@ -44,7 +51,7 @@ class TaskService {
       status: taskData.status || Status.Todo,
       priority: taskData.priority || Priority.Medium,
       deadline: taskData.deadline,
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
     };
 
     this.tasks.push(newTask);
@@ -52,7 +59,7 @@ class TaskService {
   }
 
   updateTask(id: string, taskData: TaskUpdateInput): Task {
-    const taskIndex = this.tasks.findIndex(task => task.id === id);
+    const taskIndex = this.tasks.findIndex((task) => task.id === id);
 
     if (taskIndex === -1) {
       throw new AppError('Task not found', 404);
@@ -61,7 +68,7 @@ class TaskService {
     const updatedTask: Task = {
       ...this.tasks[taskIndex],
       ...taskData,
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date().toISOString(),
     };
 
     this.tasks[taskIndex] = updatedTask;
@@ -69,7 +76,7 @@ class TaskService {
   }
 
   deleteTask(id: string): void {
-    const taskIndex = this.tasks.findIndex(task => task.id === id);
+    const taskIndex = this.tasks.findIndex((task) => task.id === id);
 
     if (taskIndex === -1) {
       throw new AppError('Task not found', 404);
@@ -88,7 +95,3 @@ class TaskService {
 }
 
 export const taskService = new TaskService();
-
-
-
-

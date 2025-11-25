@@ -143,11 +143,7 @@ export function TaskDetails() {
           <Link to={`/tasks/${id}/edit`} className="edit-button">
             Edit Task
           </Link>
-          <button
-            onClick={handleDeleteClick}
-            disabled={deleting}
-            className="delete-button"
-          >
+          <button onClick={handleDeleteClick} disabled={deleting} className="delete-button">
             Delete Task
           </button>
         </div>
@@ -170,9 +166,7 @@ export function TaskDetails() {
 
           <div className="task-detail-item">
             <span className="label">Priority:</span>
-            <span className={`badge priority-${task.priority}`}>
-              {task.priority}
-            </span>
+            <span className={`badge priority-${task.priority}`}>{task.priority}</span>
           </div>
 
           <div className="task-detail-item">
@@ -196,4 +190,3 @@ export function TaskDetails() {
     </div>
   );
 }
-

@@ -8,8 +8,3 @@ export function MainLayout() {
     </div>
   );
 }
-
-
-
-
-

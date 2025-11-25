@@ -11,7 +11,9 @@ export function TasksList() {
   const [error, setError] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
-  const [deleteConfirm, setDeleteConfirm] = useState<{ taskId: string; taskTitle: string } | null>(null);
+  const [deleteConfirm, setDeleteConfirm] = useState<{ taskId: string; taskTitle: string } | null>(
+    null
+  );
 
   useEffect(() => {
     loadTasks();
@@ -117,7 +119,10 @@ export function TasksList() {
         <div className="modal-overlay" onClick={handleDeleteCancel}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <h2>Confirm Delete</h2>
-            <p>Are you sure you want to delete "{deleteConfirm.taskTitle}"? This action cannot be undone.</p>
+            <p>
+              Are you sure you want to delete "{deleteConfirm.taskTitle}"? This action cannot be
+              undone.
+            </p>
             <div className="modal-actions">
               <button
                 type="button"
@@ -150,24 +155,20 @@ export function TasksList() {
           <div className="tasks-column">
             <div className="column-header">
               <h2>To Do</h2>
-              <span className="task-count">{tasks.filter(t => t.status === Status.Todo).length}</span>
+              <span className="task-count">
+                {tasks.filter((t) => t.status === Status.Todo).length}
+              </span>
             </div>
             <div className="tasks-list">
               {tasks
-                .filter(task => task.status === Status.Todo)
+                .filter((task) => task.status === Status.Todo)
                 .map((task) => (
                   <div key={task.id} className="task-card-wrapper">
-                    <Link
-                      to={`/tasks/${task.id}`}
-                      className="task-card"
-                      data-testid={`task-card-${task.id}`}
-                    >
+                    <Link to={`/tasks/${task.id}`} className="task-card">
                       <h3>{task.title}</h3>
                       <p className="task-description">{task.description}</p>
                       <div className="task-meta">
-                        <span className={`badge priority-${task.priority}`}>
-                          {task.priority}
-                        </span>
+                        <span className={`badge priority-${task.priority}`}>{task.priority}</span>
                         <span className="task-deadline">
                           {new Date(task.deadline).toLocaleDateString()}
                         </span>
@@ -187,7 +188,7 @@ export function TasksList() {
                     </button>
                   </div>
                 ))}
-              {tasks.filter(t => t.status === Status.Todo).length === 0 && (
+              {tasks.filter((t) => t.status === Status.Todo).length === 0 && (
                 <div className="empty-column">No tasks</div>
               )}
             </div>
@@ -196,24 +197,20 @@ export function TasksList() {
           <div className="tasks-column">
             <div className="column-header">
               <h2>In Progress</h2>
-              <span className="task-count">{tasks.filter(t => t.status === Status.InProgress).length}</span>
+              <span className="task-count">
+                {tasks.filter((t) => t.status === Status.InProgress).length}
+              </span>
             </div>
             <div className="tasks-list">
               {tasks
-                .filter(task => task.status === Status.InProgress)
+                .filter((task) => task.status === Status.InProgress)
                 .map((task) => (
                   <div key={task.id} className="task-card-wrapper">
-                    <Link
-                      to={`/tasks/${task.id}`}
-                      className="task-card"
-                      data-testid={`task-card-${task.id}`}
-                    >
+                    <Link to={`/tasks/${task.id}`} className="task-card">
                       <h3>{task.title}</h3>
                       <p className="task-description">{task.description}</p>
                       <div className="task-meta">
-                        <span className={`badge priority-${task.priority}`}>
-                          {task.priority}
-                        </span>
+                        <span className={`badge priority-${task.priority}`}>{task.priority}</span>
                         <span className="task-deadline">
                           {new Date(task.deadline).toLocaleDateString()}
                         </span>
@@ -233,7 +230,7 @@ export function TasksList() {
                     </button>
                   </div>
                 ))}
-              {tasks.filter(t => t.status === Status.InProgress).length === 0 && (
+              {tasks.filter((t) => t.status === Status.InProgress).length === 0 && (
                 <div className="empty-column">No tasks</div>
               )}
             </div>
@@ -242,24 +239,20 @@ export function TasksList() {
           <div className="tasks-column">
             <div className="column-header">
               <h2>Done</h2>
-              <span className="task-count">{tasks.filter(t => t.status === Status.Done).length}</span>
+              <span className="task-count">
+                {tasks.filter((t) => t.status === Status.Done).length}
+              </span>
             </div>
             <div className="tasks-list">
               {tasks
-                .filter(task => task.status === Status.Done)
+                .filter((task) => task.status === Status.Done)
                 .map((task) => (
                   <div key={task.id} className="task-card-wrapper">
-                    <Link
-                      to={`/tasks/${task.id}`}
-                      className="task-card"
-                      data-testid={`task-card-${task.id}`}
-                    >
+                    <Link to={`/tasks/${task.id}`} className="task-card">
                       <h3>{task.title}</h3>
                       <p className="task-description">{task.description}</p>
                       <div className="task-meta">
-                        <span className={`badge priority-${task.priority}`}>
-                          {task.priority}
-                        </span>
+                        <span className={`badge priority-${task.priority}`}>{task.priority}</span>
                         <span className="task-deadline">
                           {new Date(task.deadline).toLocaleDateString()}
                         </span>
@@ -279,7 +272,7 @@ export function TasksList() {
                     </button>
                   </div>
                 ))}
-              {tasks.filter(t => t.status === Status.Done).length === 0 && (
+              {tasks.filter((t) => t.status === Status.Done).length === 0 && (
                 <div className="empty-column">No tasks</div>
               )}
             </div>
@@ -289,4 +282,3 @@ export function TasksList() {
     </div>
   );
 }
-

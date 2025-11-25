@@ -130,4 +130,3 @@ export async function deleteTask(id: string): Promise<void> {
 }
 
 export type { TaskCreateInput, TaskUpdateInput };
-

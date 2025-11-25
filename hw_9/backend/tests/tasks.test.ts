@@ -10,9 +10,7 @@ describe('Tasks API Integration Tests', () => {
 
   describe('GET /tasks', () => {
     it('should return 200 and empty array when no tasks exist', async () => {
-      const response = await request(app)
-        .get('/tasks')
-        .expect(200);
+      const response = await request(app).get('/tasks').expect(200);
 
       expect(response.body).toEqual([]);
     });
@@ -34,9 +32,7 @@ describe('Tasks API Integration Tests', () => {
         priority: Priority.High,
       });
 
-      const response = await request(app)
-        .get('/tasks')
-        .expect(200);
+      const response = await request(app).get('/tasks').expect(200);
 
       expect(response.body).toHaveLength(2);
       expect(response.body).toContainEqual(expect.objectContaining({ id: task1.id }));
@@ -60,10 +56,7 @@ describe('Tasks API Integration Tests', () => {
         priority: Priority.High,
       });
 
-      const response = await request(app)
-        .get('/tasks')
-        .query({ status: Status.Todo })
-        .expect(200);
+      const response = await request(app).get('/tasks').query({ status: Status.Todo }).expect(200);
 
       expect(response.body).toHaveLength(1);
       expect(response.body[0].status).toBe(Status.Todo);
@@ -104,9 +97,7 @@ describe('Tasks API Integration Tests', () => {
         deadline: '2024-12-31',
       });
 
-      const response = await request(app)
-        .get(`/tasks/${task.id}`)
-        .expect(200);
+      const response = await request(app).get(`/tasks/${task.id}`).expect(200);
 
       expect(response.body).toMatchObject({
         id: task.id,
@@ -117,9 +108,7 @@ describe('Tasks API Integration Tests', () => {
     });
 
     it('should return 404 when task does not exist', async () => {
-      const response = await request(app)
-        .get('/tasks/non-existent-id')
-        .expect(404);
+      const response = await request(app).get('/tasks/non-existent-id').expect(404);
 
       expect(response.body).toMatchObject({
         error: 'Task not found',
@@ -129,10 +118,8 @@ describe('Tasks API Integration Tests', () => {
     it('should return 404 for route /tasks/ (empty id)', async () => {
       // Express treats /tasks/ as /tasks route, so it returns 200 with empty array
       // This is expected behavior - empty id is handled by route matching
-      const response = await request(app)
-        .get('/tasks/')
-        .expect(200);
-      
+      const response = await request(app).get('/tasks/').expect(200);
+
       expect(response.body).toEqual([]);
     });
   });
@@ -147,10 +134,7 @@ describe('Tasks API Integration Tests', () => {
         priority: Priority.Medium,
       };
 
-      const response = await request(app)
-        .post('/tasks')
-        .send(taskData)
-        .expect(201);
+      const response = await request(app).post('/tasks').send(taskData).expect(201);
 
       expect(response.body).toMatchObject({
         title: taskData.title,
@@ -170,10 +154,7 @@ describe('Tasks API Integration Tests', () => {
         deadline: '2024-12-31',
       };
 
-      const response = await request(app)
-        .post('/tasks')
-        .send(taskData)
-        .expect(201);
+      const response = await request(app).post('/tasks').send(taskData).expect(201);
 
       expect(response.body.status).toBe(Status.Todo);
       expect(response.body.priority).toBe(Priority.Medium);
@@ -185,10 +166,7 @@ describe('Tasks API Integration Tests', () => {
         deadline: '2024-12-31',
       };
 
-      const response = await request(app)
-        .post('/tasks')
-        .send(taskData)
-        .expect(400);
+      const response = await request(app).post('/tasks').send(taskData).expect(400);
 
       expect(response.body).toHaveProperty('error', 'Validation error');
       expect(response.body.details).toBeInstanceOf(Array);
@@ -200,10 +178,7 @@ describe('Tasks API Integration Tests', () => {
         deadline: '2024-12-31',
       };
 
-      const response = await request(app)
-        .post('/tasks')
-        .send(taskData)
-        .expect(400);
+      const response = await request(app).post('/tasks').send(taskData).expect(400);
 
       expect(response.body).toHaveProperty('error', 'Validation error');
     });
@@ -214,10 +189,7 @@ describe('Tasks API Integration Tests', () => {
         description: 'New Description',
       };
 
-      const response = await request(app)
-        .post('/tasks')
-        .send(taskData)
-        .expect(400);
+      const response = await request(app).post('/tasks').send(taskData).expect(400);
 
       expect(response.body).toHaveProperty('error', 'Validation error');
     });
@@ -229,10 +201,7 @@ describe('Tasks API Integration Tests', () => {
         deadline: '2024-12-31',
       };
 
-      const response = await request(app)
-        .post('/tasks')
-        .send(taskData)
-        .expect(400);
+      const response = await request(app).post('/tasks').send(taskData).expect(400);
 
       expect(response.body).toHaveProperty('error', 'Validation error');
     });
@@ -244,10 +213,7 @@ describe('Tasks API Integration Tests', () => {
         deadline: '2024-12-31',
       };
 
-      const response = await request(app)
-        .post('/tasks')
-        .send(taskData)
-        .expect(400);
+      const response = await request(app).post('/tasks').send(taskData).expect(400);
 
       expect(response.body).toHaveProperty('error', 'Validation error');
     });
@@ -260,10 +226,7 @@ describe('Tasks API Integration Tests', () => {
         status: 'invalid_status',
       };
 
-      const response = await request(app)
-        .post('/tasks')
-        .send(taskData)
-        .expect(400);
+      const response = await request(app).post('/tasks').send(taskData).expect(400);
 
       expect(response.body).toHaveProperty('error', 'Validation error');
     });
@@ -276,10 +239,7 @@ describe('Tasks API Integration Tests', () => {
         priority: 'invalid_priority',
       };
 
-      const response = await request(app)
-        .post('/tasks')
-        .send(taskData)
-        .expect(400);
+      const response = await request(app).post('/tasks').send(taskData).expect(400);
 
       expect(response.body).toHaveProperty('error', 'Validation error');
     });
@@ -298,10 +258,7 @@ describe('Tasks API Integration Tests', () => {
         status: Status.InProgress,
       };
 
-      const response = await request(app)
-        .put(`/tasks/${task.id}`)
-        .send(updateData)
-        .expect(200);
+      const response = await request(app).put(`/tasks/${task.id}`).send(updateData).expect(200);
 
       expect(response.body).toMatchObject({
         id: task.id,
@@ -338,10 +295,7 @@ describe('Tasks API Integration Tests', () => {
         title: 'a'.repeat(101),
       };
 
-      const response = await request(app)
-        .put(`/tasks/${task.id}`)
-        .send(updateData)
-        .expect(400);
+      const response = await request(app).put(`/tasks/${task.id}`).send(updateData).expect(400);
 
       expect(response.body).toHaveProperty('error', 'Validation error');
     });
@@ -355,24 +309,17 @@ describe('Tasks API Integration Tests', () => {
         deadline: '2024-12-31',
       });
 
-      const response = await request(app)
-        .delete(`/tasks/${task.id}`)
-        .expect(200);
+      const response = await request(app).delete(`/tasks/${task.id}`).expect(200);
 
       expect(response.body).toMatchObject({
         message: 'Task deleted successfully',
       });
 
-      // Verify task is deleted
-      const getResponse = await request(app)
-        .get(`/tasks/${task.id}`)
-        .expect(404);
+      await request(app).get(`/tasks/${task.id}`).expect(404);
     });
 
     it('should return 404 when task does not exist', async () => {
-      const response = await request(app)
-        .delete('/tasks/non-existent-id')
-        .expect(404);
+      const response = await request(app).delete('/tasks/non-existent-id').expect(404);
 
       expect(response.body).toMatchObject({
         error: 'Task not found',
@@ -380,4 +327,3 @@ describe('Tasks API Integration Tests', () => {
     });
   });
 });
-

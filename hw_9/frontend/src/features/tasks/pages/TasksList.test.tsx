@@ -59,19 +59,19 @@ describe('TasksList', () => {
     // Check that all required fields are present
     expect(screen.getByText('Description 1')).toBeInTheDocument();
     expect(screen.getByText('Description 2')).toBeInTheDocument();
-    
+
     // Check that tasks are displayed in correct columns (status-based)
     expect(screen.getByText('To Do')).toBeInTheDocument();
     expect(screen.getByText('In Progress')).toBeInTheDocument();
     expect(screen.getByText('Done')).toBeInTheDocument();
-    
+
     // Check priority badges
     expect(screen.getByText('low')).toBeInTheDocument();
     expect(screen.getByText('high')).toBeInTheDocument();
 
-    // Check task cards have correct test IDs
-    expect(screen.getByTestId('task-card-1')).toBeInTheDocument();
-    expect(screen.getByTestId('task-card-2')).toBeInTheDocument();
+    // Check task cards are present
+    expect(screen.getByText('Test Task 1')).toBeInTheDocument();
+    expect(screen.getByText('Test Task 2')).toBeInTheDocument();
   });
 
   it('should display empty state when no tasks exist', async () => {
@@ -112,4 +112,3 @@ describe('TasksList', () => {
     });
   });
 });
-

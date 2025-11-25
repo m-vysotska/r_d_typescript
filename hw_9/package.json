@@ -19,8 +19,8 @@
     "test:frontend": "cd frontend && npm test -- --run",
     "install:all": "npm install && cd backend && npm install && cd ../frontend && npm install",
     "lint": "npm run lint:backend && npm run lint:frontend",
-    "lint:backend": "cd backend && npm run lint",
-    "lint:frontend": "cd frontend && npm run lint"
+    "lint:backend": "cd backend && npm run lint -- --fix",
+    "lint:frontend": "cd frontend && npm run lint -- --fix"
   },
   "devDependencies": {
     "concurrently": "^9.2.1"
@@ -28,5 +28,9 @@
   "engines": {
     "node": ">=20",
     "npm": ">=10"
+  },
+  "dependencies": {
+    "jiti": "^2.6.1",
+    "typescript-eslint": "^8.48.0"
   }
 }
