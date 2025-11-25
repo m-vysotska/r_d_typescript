@@ -23,6 +23,7 @@
     "lint:frontend": "cd frontend && npm run lint -- --fix"
   },
   "devDependencies": {
+    "@types/eslint-config-prettier": "^6.11.3",
     "concurrently": "^9.2.1"
   },
   "engines": {
