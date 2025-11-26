@@ -16,7 +16,7 @@ export const validateQuery = (schema: ZodSchema) => {
   return (req: Request, res: Response, next: NextFunction): void => {
     try {
       const parsed = schema.parse(req.query);
-      req.query = parsed as any; // Type assertion to bypass Express type constraints
+      req.query = parsed as typeof req.query; // Type assertion to bypass Express type constraints
       next();
     } catch (error) {
       next(error);
@@ -28,11 +28,10 @@ export const validateParams = (schema: ZodSchema) => {
   return (req: Request, res: Response, next: NextFunction): void => {
     try {
       const parsed = schema.parse(req.params);
-      req.params = parsed as any; // Type assertion to bypass Express type constraints
+      req.params = parsed as typeof req.params; // Type assertion to bypass Express type constraints
       next();
     } catch (error) {
       next(error);
     }
   };
 };
-
